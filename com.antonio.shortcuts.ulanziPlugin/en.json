@@ -1,0 +1,12 @@
+{
+  "Name": "Claude Deck",
+  "Description": "Claude Code on the Ulanzi Deck: live status pet, answer questions from the deck, and a big-screen session display.",
+  "Actions": [
+    { "Name": "Claude Pet", "Tooltip": "Live Claude Code status: coding, asking, or idle. Press to jump to the session needing you." },
+    { "Name": "Claude Option Next", "Tooltip": "Cycle through the options Claude is asking about (shown on the big key)." },
+    { "Name": "Claude Option OK", "Tooltip": "Answer Claude with the option currently shown on the big key." },
+    { "Name": "Claude Screen Setup", "Tooltip": "Toggle Claude status on the big screen. Press = automatic (Studio restarts itself)." },
+    { "Name": "Claude Session Screen", "Tooltip": "The big-screen display: session name, status, and the question picker." }
+  ],
+  "Localization": {}
+}

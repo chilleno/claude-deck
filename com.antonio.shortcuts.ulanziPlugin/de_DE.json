@@ -1,0 +1,27 @@
+{
+  "Name": "Claude Deck",
+  "Description": "Claude Code auf dem Ulanzi Deck: Live-Status-Pet, Fragen direkt vom Deck beantworten, Session-Anzeige auf dem großen Display.",
+  "Actions": [
+    {
+      "Name": "Claude Pet",
+      "Tooltip": "Live-Status von Claude Code: codiert, fragt oder wartet. Drücken springt zur Session, die dich braucht."
+    },
+    {
+      "Name": "Nächste Option",
+      "Tooltip": "Durch die Optionen blättern, die Claude anbietet (auf der großen Taste angezeigt)."
+    },
+    {
+      "Name": "Option bestätigen",
+      "Tooltip": "Claude mit der angezeigten Option antworten."
+    },
+    {
+      "Name": "Display einrichten",
+      "Tooltip": "Claude-Status auf dem großen Display umschalten. Drücken = automatisch (Studio startet selbst neu)."
+    },
+    {
+      "Name": "Session-Display",
+      "Tooltip": "Großes Display: Session-Name, Status und Fragen-Auswahl."
+    }
+  ],
+  "Localization": {}
+}

@@ -1,0 +1,27 @@
+{
+  "Name": "Claude Deck",
+  "Description": "Claude Code sur l'Ulanzi Deck : mascotte d'état en direct, répondez aux questions depuis le deck, affichage de session sur le grand écran.",
+  "Actions": [
+    {
+      "Name": "Mascotte Claude",
+      "Tooltip": "État en direct de Claude Code : code, questionne ou en attente. Appuyez pour rejoindre la session qui vous attend."
+    },
+    {
+      "Name": "Option suivante",
+      "Tooltip": "Parcourez les options proposées par Claude (affichées sur la grande touche)."
+    },
+    {
+      "Name": "Valider l'option",
+      "Tooltip": "Répondez à Claude avec l'option affichée sur la grande touche."
+    },
+    {
+      "Name": "Configurer l'écran",
+      "Tooltip": "Basculez l'état Claude sur le grand écran. Appui = automatique (Studio redémarre seul)."
+    },
+    {
+      "Name": "Écran de session",
+      "Tooltip": "Le grand écran : nom de session, état et sélecteur de questions."
+    }
+  ],
+  "Localization": {}
+}

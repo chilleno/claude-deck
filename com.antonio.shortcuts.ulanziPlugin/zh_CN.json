@@ -1,0 +1,27 @@
+{
+  "Name": "Claude Deck",
+  "Description": "在 Ulanzi Deck 上使用 Claude Code：实时状态宠物、用按键回答问题、大屏会话显示。",
+  "Actions": [
+    {
+      "Name": "Claude 宠物",
+      "Tooltip": "Claude Code 实时状态：编码、提问或空闲。按下跳转到需要你的会话。"
+    },
+    {
+      "Name": "下一个选项",
+      "Tooltip": "循环浏览 Claude 提出的选项（显示在大按键上）。"
+    },
+    {
+      "Name": "确认选项",
+      "Tooltip": "用大按键上当前显示的选项回答 Claude。"
+    },
+    {
+      "Name": "大屏设置",
+      "Tooltip": "切换大屏上的 Claude 状态。按下即自动完成（Studio 会自行重启）。"
+    },
+    {
+      "Name": "会话大屏",
+      "Tooltip": "大屏显示：会话名称、状态和问题选择器。"
+    }
+  ],
+  "Localization": {}
+}

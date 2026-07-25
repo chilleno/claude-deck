@@ -1,0 +1,27 @@
+{
+  "Name": "Claude Deck",
+  "Description": "喺 Ulanzi Deck 上用 Claude Code:即時狀態寵物、用按鍵回答問題、大屏幕顯示工作階段。",
+  "Actions": [
+    {
+      "Name": "Claude 寵物",
+      "Tooltip": "Claude Code 即時狀態:編碼、提問或閒置。撳下跳去需要你嘅工作階段。"
+    },
+    {
+      "Name": "下一個選項",
+      "Tooltip": "循環顯示 Claude 提出嘅選項(喺大按鍵顯示)。"
+    },
+    {
+      "Name": "確認選項",
+      "Tooltip": "用大按鍵上而家顯示嘅選項回覆 Claude。"
+    },
+    {
+      "Name": "大屏幕設定",
+      "Tooltip": "切換大屏幕嘅 Claude 狀態。撳一下即自動完成(Studio 會自動重啟)。"
+    },
+    {
+      "Name": "工作階段屏幕",
+      "Tooltip": "大屏幕顯示:工作階段名、狀態同問題選擇器。"
+    }
+  ],
+  "Localization": {}
+}

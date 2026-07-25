@@ -1,0 +1,27 @@
+{
+  "Name": "Claude Deck",
+  "Description": "Ulanzi Deck で Claude Code：ライブ状態ペット、デッキから質問に回答、ビッグスクリーンにセッション表示。",
+  "Actions": [
+    {
+      "Name": "Claude ペット",
+      "Tooltip": "Claude Code のライブ状態：コーディング中・質問中・待機中。押すと対象セッションへ移動。"
+    },
+    {
+      "Name": "次のオプション",
+      "Tooltip": "Claude の質問オプションを切り替え（ビッグキーに表示）。"
+    },
+    {
+      "Name": "オプション確定",
+      "Tooltip": "ビッグキーに表示中のオプションで Claude に回答。"
+    },
+    {
+      "Name": "スクリーン設定",
+      "Tooltip": "ビッグスクリーンの Claude 表示を切り替え。押すだけで自動（Studio が自動再起動）。"
+    },
+    {
+      "Name": "セッション画面",
+      "Tooltip": "ビッグスクリーン表示：セッション名、状態、質問ピッカー。"
+    }
+  ],
+  "Localization": {}
+}

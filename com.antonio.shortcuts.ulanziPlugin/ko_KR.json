@@ -1,0 +1,27 @@
+{
+  "Name": "Claude Deck",
+  "Description": "Ulanzi Deck에서 Claude Code: 실시간 상태 펫, 덱에서 질문 답변, 큰 화면 세션 표시.",
+  "Actions": [
+    {
+      "Name": "Claude 펫",
+      "Tooltip": "Claude Code 실시간 상태: 코딩, 질문, 대기. 누르면 해당 세션으로 이동."
+    },
+    {
+      "Name": "다음 옵션",
+      "Tooltip": "Claude가 묻는 옵션을 순환 (큰 키에 표시)."
+    },
+    {
+      "Name": "옵션 확인",
+      "Tooltip": "큰 키에 표시된 옵션으로 Claude에 답변."
+    },
+    {
+      "Name": "화면 설정",
+      "Tooltip": "큰 화면의 Claude 상태 전환. 누르면 자동 (Studio 자동 재시작)."
+    },
+    {
+      "Name": "세션 화면",
+      "Tooltip": "큰 화면 표시: 세션 이름, 상태, 질문 선택기."
+    }
+  ],
+  "Localization": {}
+}

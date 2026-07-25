@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Claude Pet</title>
+  <link rel="stylesheet" href="../libs/css/uspi.css">
+  <style>
+    .panel { padding: 8px 12px; font-size: 12px; line-height: 1.5; }
+    .panel label { display: block; margin: 10px 0 4px; font-weight: 600; }
+    .panel input[type=text], .panel select {
+      width: 100%; box-sizing: border-box; background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15); border-radius: 4px;
+      color: inherit; padding: 6px; font: inherit;
+    }
+    .muted { opacity: .6; font-size: 11px; margin-top: 6px; }
+    .panel select { background: #2c2c33; color: #ffffff; }
+    .panel select option { background: #2c2c33; color: #ffffff; }
+  </style>
+</head>
+<body>
+  <div class="udpi-wrapper hidden uspi-wrapper">
+    <form id="property-inspector" onsubmit="return false">
+      <div class="panel">
+        <label for="dir">Watch project dir (optional)</label>
+        <input type="text" id="dir" placeholder="empty = all claude sessions">
+        <div class="muted">Leave empty to show combined status of every Claude Code session. Set a project path to watch only that one. Press = jump to the session needing you.</div>
+        <label for="terminal">Terminal</label>
+        <select id="terminal"></select>
+        <div class="muted">Global choice — used by all Claude Deck keys.</div>
+        <div id="hook-status" class="muted" style="margin-top:10px">Checking…</div>
+        <button type="button" id="hook-install" style="margin-top:6px; background:#3ecf6b; color:#1f1f23; border:0; border-radius:4px; padding:6px 12px; font:inherit; font-weight:600; cursor:pointer;">Enable Claude tracking</button>
+      </div>
+    </form>
+  </div>
+  <script src="../libs/js/constants.js"></script>
+  <script src="../libs/js/eventEmitter.js"></script>
+  <script src="../libs/js/timers.js"></script>
+  <script src="../libs/js/utils.js"></script>
+  <script src="../libs/js/ulanziApi.js"></script>
+  <script>window.PI_FIELDS = [{"id": "dir", "default": ""}];</script>
+  <script src="./pi-common.js"></script>
+  <script src="./pi-terminal.js"></script>
+  <script src="./pi-hooks.js"></script>
+</body>
+</html>

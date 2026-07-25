@@ -1,0 +1,27 @@
+{
+  "Name": "Claude Deck",
+  "Description": "Claude Code no Ulanzi Deck: mascote de estado ao vivo, responda perguntas pelo deck e ecrã grande com a sessão.",
+  "Actions": [
+    {
+      "Name": "Mascote Claude",
+      "Tooltip": "Estado ao vivo do Claude Code: a programar, a perguntar ou parado. Prima para ir à sessão que precisa de si."
+    },
+    {
+      "Name": "Próxima Opção",
+      "Tooltip": "Percorra as opções que o Claude está a perguntar (mostradas na tecla grande)."
+    },
+    {
+      "Name": "Confirmar Opção",
+      "Tooltip": "Responda ao Claude com a opção mostrada na tecla grande."
+    },
+    {
+      "Name": "Configurar Ecrã",
+      "Tooltip": "Alterne o estado do Claude no ecrã grande. Premir = automático (o Studio reinicia sozinho)."
+    },
+    {
+      "Name": "Ecrã de Sessão",
+      "Tooltip": "O ecrã grande: nome da sessão, estado e seletor de perguntas."
+    }
+  ],
+  "Localization": {}
+}

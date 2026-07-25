@@ -1,0 +1,6 @@
+.playwright-mcp/
+node_modules/
+.DS_Store
+upload-form-review.png
+__pycache__/
+*.pyc
