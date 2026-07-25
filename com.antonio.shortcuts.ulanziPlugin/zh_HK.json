@@ -19,6 +19,10 @@
       "Tooltip": "切換大屏幕嘅 Claude 狀態。撳一下即自動完成(Studio 會自動重啟)。"
     },
     {
+      "Name": "Claude 壓縮",
+      "Tooltip": "壓縮最上層 Claude 會話的上下文。按一次確認（眼睛），再按一次執行 /compact。"
+    },
+    {
       "Name": "工作階段屏幕",
       "Tooltip": "大屏幕顯示:工作階段名、狀態同問題選擇器。"
     }

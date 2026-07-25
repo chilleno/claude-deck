@@ -51,6 +51,15 @@
       "Controllers": ["Keypad"]
     },
     {
+      "Name": "Claude Compact",
+      "Tooltip": "Compact the top Claude session's context. Press once to confirm (eyes), press again to run /compact.",
+      "Icon": "resources/action-compact.png",
+      "UUID": "com.antonio.deck.shortcuts.compact",
+      "States": [{ "Image": "resources/action-compact.png" }],
+      "SupportedInMultiActions": false,
+      "Controllers": ["Keypad"]
+    },
+    {
       "Name": "Claude Session Screen",
       "Tooltip": "The big-screen display: session name, status, and the question picker. Placed on the big key by Claude Screen Setup.",
       "Icon": "resources/action-itermcycle.png",

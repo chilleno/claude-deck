@@ -19,7 +19,7 @@ import { readStates, aggregateState, askingSession } from './claude-state.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PET_GIFS = {};
-for (const [key, file] of Object.entries({ coding: 'coding.gif', magic: 'magic.gif', idle: 'idle.gif', wave: 'wave.gif', dancing: 'dancing.gif', sparkle: 'sparkle.gif', idea: 'idea.gif', loading: 'loading.gif' })) {
+for (const [key, file] of Object.entries({ coding: 'coding.gif', magic: 'magic.gif', idle: 'idle.gif', wave: 'wave.gif', dancing: 'dancing.gif', sparkle: 'sparkle.gif', idea: 'idea.gif', loading: 'loading.gif', bonk: 'bonk.gif' })) {
   try {
     const buf = readFileSync(join(__dirname, '../resources/pets', file));
     PET_GIFS[key] = 'data:image/gif;base64,' + buf.toString('base64');
@@ -34,6 +34,16 @@ try {
 let APPROVED_PNG = null;
 try {
   APPROVED_PNG = 'data:image/png;base64,' + readFileSync(join(__dirname, '../resources/pets/approved.png')).toString('base64');
+} catch { /* png missing */ }
+
+let YELLS_PNG = null;
+try {
+  YELLS_PNG = 'data:image/png;base64,' + readFileSync(join(__dirname, '../resources/pets/yells.png')).toString('base64');
+} catch { /* png missing */ }
+
+let EYES_PNG = null;
+try {
+  EYES_PNG = 'data:image/png;base64,' + readFileSync(join(__dirname, '../resources/pets/eyes.png')).toString('base64');
 } catch { /* png missing */ }
 
 const STATE_GIF = {
@@ -54,6 +64,7 @@ const HANDLERS = {
   [`${PLUGIN_UUID}.optnext`]: optNext,
   [`${PLUGIN_UUID}.optok`]: optOk,
   [`${PLUGIN_UUID}.screensetup`]: setupPress,
+  [`${PLUGIN_UUID}.compact`]: compactPress,
 };
 
 // ---- AskUserQuestion option picker --------------------------------------
@@ -159,7 +170,17 @@ async function refreshCycleIcon(inst) {
           total: states.length,
           status: best.state,
           info: best.info,
+          compactElapsed: best.state === 'compacting'
+            ? Math.max(0, Date.now() / 1000 - best.ts)
+            : null,
         });
+        // compaction bar is time-driven — poll at 1s for smooth motion, 3s otherwise
+        const wantMs = best.state === 'compacting' ? 1000 : CYCLE_POLL_MS;
+        if (inst.timer && inst.pollMs !== wantMs) {
+          clearInterval(inst.timer);
+          inst.pollMs = wantMs;
+          inst.timer = setInterval(() => refreshCycleIcon(inst), wantMs);
+        }
       }
     }
     if (dataUrl !== inst.lastIcon) {
@@ -176,6 +197,7 @@ async function refreshCycleIcon(inst) {
 function startCyclePolling(inst) {
   stopCyclePolling(inst);
   refreshCycleIcon(inst);
+  inst.pollMs = CYCLE_POLL_MS;
   inst.timer = setInterval(() => refreshCycleIcon(inst), CYCLE_POLL_MS);
 }
 
@@ -388,6 +410,79 @@ function startPetPolling(inst) {
   inst.timer = setInterval(() => refreshPetIcon(inst), PET_POLL_MS);
 }
 
+// ---- Claude Compact key --------------------------------------------------
+// Two-step: first press arms a confirmation (eyes image), second press within
+// the window sends /compact to the top-priority session. While any session is
+// compacting the key shows the bonk GIF and presses are ignored.
+const COMPACT_ACTION = `${PLUGIN_UUID}.compact`;
+const COMPACT_CONFIRM_MS = 8000;
+const COMPACT = { confirmUntil: 0 };
+
+function isCompact(context) {
+  return (($UD.decodeContext(context) || {}).uuid || '') === COMPACT_ACTION;
+}
+
+function anyCompacting(states) {
+  return states.some(s => s.state === 'compacting');
+}
+
+function refreshCompactIcon(inst) {
+  try {
+    const states = readStates();
+    let wanted;
+    if (!states.length) wanted = 'png:fail';
+    else if (anyCompacting(states)) wanted = 'gif:bonk';
+    else if (Date.now() < COMPACT.confirmUntil) wanted = 'png:eyes';
+    else wanted = 'png:yells';
+    if (wanted === inst.lastIcon) return;
+    const [kind, name] = wanted.split(':');
+    const PNGS = { fail: FAIL_PNG, eyes: EYES_PNG, yells: YELLS_PNG };
+    if (kind === 'gif' && PET_GIFS[name]) {
+      inst.lastIcon = wanted;
+      $UD.setGifDataIcon(inst.context, PET_GIFS[name]);
+    } else if (kind === 'png' && PNGS[name]) {
+      inst.lastIcon = wanted;
+      $UD.setBaseDataIcon(inst.context, PNGS[name]);
+    }
+  } catch (e) {
+    log('compact icon refresh failed', e?.message);
+  }
+}
+
+function startCompactPolling(inst) {
+  stopCyclePolling(inst);
+  refreshCompactIcon(inst);
+  inst.timer = setInterval(() => refreshCompactIcon(inst), PET_POLL_MS);
+}
+
+function refreshCompactKeys() {
+  for (const inst of INSTANCES.values()) {
+    if (isCompact(inst.context) && inst.timer) refreshCompactIcon(inst);
+  }
+}
+
+async function compactPress() {
+  const states = readStates();
+  if (!states.length) { $UD.toast('No Claude session to compact'); return; }
+  if (anyCompacting(states)) return; // already running — do nothing
+  if (Date.now() >= COMPACT.confirmUntil) {
+    // first press: arm confirmation
+    COMPACT.confirmUntil = Date.now() + COMPACT_CONFIRM_MS;
+    refreshCompactKeys();
+    return;
+  }
+  // second press: fire /compact at the session shown on the big key
+  COMPACT.confirmUntil = 0;
+  const best = aggregateState(states, '');
+  const tty = await claudeTtyByCwd(best.cwd);
+  if (!tty) { $UD.toast('Session terminal not found'); refreshCompactKeys(); return; }
+  const out = await sendTextToTty(tty, '/compact', true);
+  if (out.trim() !== 'ok') { $UD.toast('Terminal session not found'); refreshCompactKeys(); return; }
+  log('sent /compact to', tty);
+  $UD.toast(`Compacting ${basename(best.cwd || '') || 'session'}…`);
+  refreshCompactKeys(); // bonk appears once the PreCompact hook flips the state
+}
+
 function ensureInstance(context, settings) {
   let inst = INSTANCES.get(context);
   if (!inst) {
@@ -397,6 +492,7 @@ function ensureInstance(context, settings) {
     if (isPet(context)) startPetPolling(inst);
     if (isOptKey(context)) startOptPolling(inst);
     if (isSetup(context)) startSetupPolling(inst);
+    if (isCompact(context)) startCompactPolling(inst);
   } else if (settings && Object.keys(settings).length) {
     inst.settings = { ...settings };
   }
@@ -457,6 +553,9 @@ $UD.onSetActive((msg) => {
     else stopCyclePolling(inst);
   } else if (isSetup(msg.context)) {
     if (msg.active) startSetupPolling(inst);
+    else stopCyclePolling(inst);
+  } else if (isCompact(msg.context)) {
+    if (msg.active) startCompactPolling(inst);
     else stopCyclePolling(inst);
   }
 });

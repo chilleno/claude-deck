@@ -19,6 +19,10 @@
       "Tooltip": "Basculez l'état Claude sur le grand écran. Appui = automatique (Studio redémarre seul)."
     },
     {
+      "Name": "Claude Compact",
+      "Tooltip": "Compacte le contexte de la session Claude principale. Appuyez une fois pour confirmer (yeux), une seconde fois pour lancer /compact."
+    },
+    {
       "Name": "Écran de session",
       "Tooltip": "Le grand écran : nom de session, état et sélecteur de questions."
     }

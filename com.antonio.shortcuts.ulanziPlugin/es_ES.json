@@ -19,6 +19,10 @@
       "Tooltip": "Alterna el estado de Claude en la pantalla grande. Pulsar = automático (Studio se reinicia solo)."
     },
     {
+      "Name": "Claude Compact",
+      "Tooltip": "Compacta el contexto de la sesión Claude principal. Pulsa una vez para confirmar (ojos) y de nuevo para ejecutar /compact."
+    },
+    {
       "Name": "Pantalla de Sesión",
       "Tooltip": "La pantalla grande: nombre de sesión, estado y selector de preguntas."
     }

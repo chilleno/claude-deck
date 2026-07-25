@@ -19,6 +19,10 @@
       "Tooltip": "切换大屏上的 Claude 状态。按下即自动完成（Studio 会自行重启）。"
     },
     {
+      "Name": "Claude 压缩",
+      "Tooltip": "压缩最上层 Claude 会话的上下文。按一次确认（眼睛），再按一次执行 /compact。"
+    },
+    {
       "Name": "会话大屏",
       "Tooltip": "大屏显示：会话名称、状态和问题选择器。"
     }
