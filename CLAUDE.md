@@ -21,6 +21,7 @@ One plugin (`com.antonio.shortcuts.ulanziPlugin/`, UUID `com.antonio.deck.shortc
 - State pipeline: hooks in ALL `~/.claude*` profiles → `hooks/claude-hook.py` → per-session JSON in `~/Library/Application Support/Ulanzi/UlanziDeck/claude-state/` → plugin polls (pet/opt 1s, big key 3s)
 - Hook wiring: `sync-hooks.sh` (dev) OR in-panel "Enable Claude tracking" button (`plugin/hooks-setup.js`, marketplace path). Antonio's profiles: `jarvis` → `~/.claude-personal`, `jarvis-even` → `~/.claude-even`, plain → `~/.claude`
 - State priority: asking > attention > compacting > working > waiting; asking/working/compacting stale >15 min → waiting; >12 h ignored
+- Big key is claude-driven: shows top-priority session's project folder + state + `info` block (model/ctx_pct/branch from transcript tail, effort + window size from profile settings.json, `[1m]` → 1M); no tracked sessions → `renderNoSession()` placeholder — never query/show the focused terminal tab (leaked "node" once, stale after boot)
 - **Hook event-ordering protections (do not regress):**
   - PermissionRequest fires right after PreToolUse for AskUserQuestion → both map asking-tools → `asking`
   - Notification only sets attention when message contains "permission" (60s-idle notification otherwise poisoned finished sessions)

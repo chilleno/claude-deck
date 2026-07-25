@@ -16,9 +16,11 @@ Claude Code state comes from **hooks**: `hooks/claude-hook.py` runs on every Cla
 | **Claude Option Next** | Cycle the options Claude is asking (shown on big key). Wave GIF when a question is live, dancing when idle. |
 | **Claude Option OK** | Answer with the shown option — types the digit into that exact terminal session, no focus steal, auto-submits. Idea GIF live / sparkle idle. |
 | **Claude Screen Setup** | One-press toggle of the big screen: Claude status ↔ built-in widget. Studio restarts itself (~15 s). Icons: approved = showing, jam = hidden, loading = applying. Panel hosts the hook-setup button. |
-| **Claude Session Screen** | The big-key display: session name + status badge, question picker when asking, confirm flash after OK. Placed on the big key by Screen Setup. Panel hosts the terminal selector. |
+| **Claude Session Screen** | The big-key display: top-priority Claude session — project name, status badge, `model · effort · branch` row and a colored context bar — plus the question picker when asking and a confirm flash after OK. Shows a "no session" placeholder when nothing is tracked (never the stale terminal name). Placed on the big key by Screen Setup. Panel hosts the terminal selector. |
 
-All keys show the fail image when no claude session is tracked.
+All small keys show the fail image when no claude session is tracked.
+
+The session screen is **claude-driven, not terminal-driven**: the name is the session's project folder from Claude state (the focused terminal tab used to leak names like "node"). The extra info comes from the hook's `session_info()`: model + context tokens + git branch parsed from the tail of the session transcript, effort + context-window size from the profile's `settings.json` (`[1m]` in the model id → 1 M window, else 200 k). Context bar: green < 60 %, yellow < 85 %, red above.
 
 ## State pipeline
 
