@@ -30,6 +30,59 @@ STATE_MAP = {
 ASKING_TOOLS = {"AskUserQuestion", "ExitPlanMode"}
 
 
+def session_info(data):
+    """Extra display data for the big key: model, context usage, branch, effort.
+
+    Model + tokens + branch come from the tail of the session transcript;
+    effort and the context-window size come from the profile's settings.json
+    (the hook inherits CLAUDE_CONFIG_DIR from the claude process).
+    """
+    info = {}
+    tp = data.get("transcript_path") or ""
+    try:
+        with open(tp, "rb") as f:
+            f.seek(0, 2)
+            size = f.tell()
+            f.seek(max(0, size - 65536))
+            tail = f.read().decode("utf-8", "replace")
+        for line in reversed(tail.splitlines()):
+            if not line.startswith("{"):
+                continue  # partial first line of the tail window
+            try:
+                rec = json.loads(line)
+            except ValueError:
+                continue
+            if "branch" not in info and rec.get("gitBranch"):
+                info["branch"] = rec["gitBranch"]
+            if "model" not in info and rec.get("type") == "assistant":
+                msg = rec.get("message") or {}
+                u = msg.get("usage") or {}
+                used = ((u.get("input_tokens") or 0)
+                        + (u.get("cache_read_input_tokens") or 0)
+                        + (u.get("cache_creation_input_tokens") or 0))
+                if used:
+                    info["model"] = (msg.get("model") or "").replace("claude-", "")
+                    info["ctx_used"] = used
+            if "model" in info and "branch" in info:
+                break
+    except OSError:
+        pass
+
+    limit = 200000
+    cfg = os.environ.get("CLAUDE_CONFIG_DIR") or os.path.expanduser("~/.claude")
+    try:
+        s = json.load(open(os.path.join(cfg, "settings.json")))
+        if s.get("effortLevel"):
+            info["effort"] = s["effortLevel"]
+        if "[1m]" in (s.get("model") or ""):
+            limit = 1000000
+    except (OSError, ValueError):
+        pass
+    if info.get("ctx_used"):
+        info["ctx_pct"] = min(100, int(round(info["ctx_used"] * 100.0 / limit)))
+    return info or None
+
+
 def main():
     try:
         data = json.load(sys.stdin)
@@ -99,6 +152,9 @@ def main():
     }
     if ask:
         payload["ask"] = ask
+    info = session_info(data)
+    if info:
+        payload["info"] = info
     tmp = path + ".tmp"
     with open(tmp, "w") as f:
         json.dump(payload, f)

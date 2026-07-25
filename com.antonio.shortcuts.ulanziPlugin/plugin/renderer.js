@@ -47,7 +47,7 @@ export const STATE_STYLE = {
   asking:    { color: '#b57edc', label: 'ASKING' },
 };
 
-export function renderSession({ name, idx, total, error, status }) {
+export function renderSession({ name, idx, total, error, status, info }) {
   const font = 'font-family="-apple-system,Helvetica,Arial,sans-serif"';
 
   if (error) {
@@ -57,9 +57,11 @@ export function renderSession({ name, idx, total, error, status }) {
     return toDataUrl(svgDoc(body));
   }
 
-  const lines = splitLines(name || 'untitled', 26);
-  const nameSize = lines.length === 1 && lines[0].length <= 16 ? 44 : 32;
-  const startY = lines.length === 1 ? 118 : 100;
+  const hasInfo = !!(info && (info.model || info.branch || info.effort || info.ctx_pct != null));
+  // with the info row + context bar below, the name gets a single compact line
+  const lines = hasInfo ? [splitLines(name || 'untitled', 22)[0]] : splitLines(name || 'untitled', 26);
+  const nameSize = hasInfo ? 36 : (lines.length === 1 && lines[0].length <= 16 ? 44 : 32);
+  const startY = hasInfo ? 96 : (lines.length === 1 ? 118 : 100);
 
   let body =
     `<text x="24" y="42" ${font} font-size="22" font-weight="700" fill="${ACCENT}" letter-spacing="2">SESSION</text>`;
@@ -67,6 +69,25 @@ export function renderSession({ name, idx, total, error, status }) {
   lines.forEach((line, i) => {
     body += `<text x="${W / 2}" y="${startY + i * 42}" ${font} font-size="${nameSize}" font-weight="700" text-anchor="middle" fill="${TEXT}">${escapeXml(line)}</text>`;
   });
+
+  if (hasInfo) {
+    const parts = [];
+    if (info.model) parts.push(info.model);
+    if (info.effort) parts.push(info.effort);
+    if (info.branch) parts.push(info.branch);
+    if (parts.length) {
+      body += `<text x="${W / 2}" y="130" ${font} font-size="19" font-weight="600" text-anchor="middle" fill="${MUTED}">${escapeXml(parts.join('  ·  '))}</text>`;
+    }
+    if (info.ctx_pct != null) {
+      const pct = Math.max(0, Math.min(100, info.ctx_pct));
+      const col = pct < 60 ? '#3ecf6b' : pct < 85 ? '#e3b341' : '#e3434c';
+      const bx = 24, by = 144, bh = 10, bw = W - 48 - 62;
+      body +=
+        `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="5" fill="#3a3a42"/>` +
+        `<rect x="${bx}" y="${by}" width="${Math.max(bh, bw * pct / 100)}" height="${bh}" rx="5" fill="${col}"/>` +
+        `<text x="${W - 24}" y="${by + bh}" ${font} font-size="18" font-weight="700" text-anchor="end" fill="${col}">${pct}%</text>`;
+    }
+  }
 
   if (status && STATE_STYLE[status]) {
     const st = STATE_STYLE[status];
@@ -85,6 +106,17 @@ export function renderSession({ name, idx, total, error, status }) {
     }
   }
 
+  return toDataUrl(svgDoc(body));
+}
+
+// Placeholder shown on the big key while no Claude Code session is tracked.
+export function renderNoSession() {
+  const font = 'font-family="-apple-system,Helvetica,Arial,sans-serif"';
+  const body =
+    `<text x="24" y="42" ${font} font-size="22" font-weight="700" fill="${ACCENT}" letter-spacing="2">CLAUDE</text>` +
+    `<circle cx="${W / 2 - 96}" cy="102" r="8" fill="#3a3a42"/>` +
+    `<text x="${W / 2 + 12}" y="112" ${font} font-size="30" font-weight="700" text-anchor="middle" fill="${MUTED}">no session</text>` +
+    `<text x="${W / 2}" y="152" ${font} font-size="20" font-weight="600" text-anchor="middle" fill="#5a5a64">waiting for a claude session…</text>`;
   return toDataUrl(svgDoc(body));
 }
 

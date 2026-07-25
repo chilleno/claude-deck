@@ -2,7 +2,6 @@ import UlanziApi from './plugin-common-node/index.js';
 import {
   openApp,
   itermCycle,
-  itermSessionInfo,
   focusItermByCwd,
   claudeTtyByCwd,
   sendTextToTty,
@@ -11,11 +10,11 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
 import { spawn } from 'child_process';
 import { homedir } from 'os';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { renderSession, renderOptions, renderConfirm } from './renderer.js';
+import { dirname, join, basename } from 'path';
+import { renderSession, renderOptions, renderConfirm, renderNoSession } from './renderer.js';
 import { detectTerminals, getTerminalChoice, setTerminalChoice } from './terminals.js';
 import { hookStatus, installHooks } from './hooks-setup.js';
-import { readStates, aggregateState, stateForSessionName, askingSession } from './claude-state.js';
+import { readStates, aggregateState, askingSession } from './claude-state.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -144,12 +143,24 @@ async function refreshCycleIcon(inst) {
       // a question is live — big key becomes the option picker
       dataUrl = renderOptions({ question: ask.ask.question, options: ask.ask.options, index: OPT.index });
     } else {
-      const info = await itermSessionInfo();
-      if (!info.error) {
-        const match = stateForSessionName(readStates(), info.name);
-        if (match) info.status = match.state;
+      const states = readStates();
+      if (!states.length) {
+        // no tracked claude session — showing last terminal name would be
+        // stale/false info (e.g. right after boot), so show a placeholder
+        dataUrl = renderNoSession();
+      } else {
+        // claude-driven display: top-priority session's project name + state,
+        // never the focused terminal tab (that showed things like "node")
+        const best = aggregateState(states, '');
+        const sorted = states.slice().sort((a, b) => a.ts - b.ts);
+        dataUrl = renderSession({
+          name: basename(best.cwd || '') || 'claude',
+          idx: sorted.findIndex(s => s.sid === best.sid) + 1,
+          total: states.length,
+          status: best.state,
+          info: best.info,
+        });
       }
-      dataUrl = renderSession(info);
     }
     if (dataUrl !== inst.lastIcon) {
       inst.lastIcon = dataUrl;
