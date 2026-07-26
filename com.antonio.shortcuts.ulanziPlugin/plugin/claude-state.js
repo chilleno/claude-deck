@@ -50,11 +50,16 @@ export function aggregateState(states, dir) {
   return { ...best, count: list.length };
 }
 
-// The session currently asking a question with a captured option list
-// (newest one if several).
-export function askingSession(states) {
+// The session currently asking a question with a captured option list.
+// A pinned session's question wins when several ask at once (so the switch
+// key chooses which one to answer first); otherwise the newest ask shows.
+export function askingSession(states, preferSid) {
   const asking = states.filter(s => s.state === 'asking' && s.ask && s.ask.options?.length);
   if (!asking.length) return null;
+  if (preferSid) {
+    const pinned = asking.find(s => s.sid === preferSid);
+    if (pinned) return pinned;
+  }
   return asking.reduce((a, b) => (b.ts > a.ts ? b : a));
 }
 

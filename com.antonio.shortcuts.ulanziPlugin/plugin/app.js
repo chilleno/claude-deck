@@ -92,7 +92,9 @@ async function switchPress() {
   const states = readStates();
   if (!states.length) { $UD.toast('No Claude sessions'); return; }
   const sorted = sessionOrder(states);
-  const cur = displayedSession(states);
+  // start from what the big key actually shows: the ask view wins over the
+  // session view, so with a question live the cycle starts at that asker
+  const cur = askingSession(states, PIN.sid) || displayedSession(states);
   const idx = sorted.findIndex(s => s.sid === cur.sid);
   const next = sorted[(idx + 1) % sorted.length];
   PIN.sid = next.sid;
@@ -106,7 +108,7 @@ async function switchPress() {
 const OPT = { key: null, index: 0, qIdx: 0, confirmUntil: 0, answeredKey: null };
 
 function currentAsk() {
-  const s = askingSession(readStates());
+  const s = askingSession(readStates(), PIN.sid);
   if (!s) return null;
   const key = s.sid + '::' + s.ask.question;
   if (OPT.key !== key) { OPT.key = key; OPT.index = 0; OPT.qIdx = 0; }
@@ -312,7 +314,7 @@ function isOptKey(context) {
 function refreshOptIcon(inst) {
   try {
     const states = readStates();
-    const asking = askingSession(states);
+    const asking = askingSession(states, PIN.sid);
     const active = !!asking && (asking.sid + '::' + asking.ask.question) !== OPT.answeredKey;
     const uuid = ($UD.decodeContext(inst.context) || {}).uuid || '';
     let wanted;
