@@ -1,4 +1,5 @@
 .playwright-mcp/
+.playwright-screenshots/
 node_modules/
 .DS_Store
 upload-form-review.png

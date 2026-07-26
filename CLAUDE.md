@@ -13,6 +13,7 @@ One plugin (`com.antonio.shortcuts.ulanziPlugin/`, UUID `com.antonio.deck.shortc
 3. `./install.sh` (writes outside project — ask Antonio first, every time; also runs `sync-hooks.sh`)
 4. Restart rules: plugin JS/GIFs → Studio restart; `hooks/*.py` + `hooks/*.sh` → NO restart (read per run); hook entries in settings.json → claude session restart
 5. Studio restart: `osascript -e 'tell application "Ulanzi Studio" to quit'; sleep 4; open -a "Ulanzi Studio"` — sometimes needs a second `open -a`; verify `ps aux | grep "[c]om.antonio.shortcuts"`
+6. Version track: every user-visible change → bump `Version` in manifest.json + entry in `CHANGELOG.md` (patch fix / minor feature / major breaking). Store zip built from manifest version
 
 ## Key facts (don't rediscover)
 
