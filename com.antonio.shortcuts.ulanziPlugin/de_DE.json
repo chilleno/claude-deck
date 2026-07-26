@@ -19,6 +19,10 @@
       "Tooltip": "Claude-Status auf dem großen Display umschalten. Drücken = automatisch (Studio startet selbst neu)."
     },
     {
+      "Name": "Sitzung wechseln",
+      "Tooltip": "Wechselt, welche Claude-Sitzung der große Bildschirm zeigt (eine Richtung, beginnt von vorn)."
+    },
+    {
       "Name": "Claude Compact",
       "Tooltip": "Komprimiert den Kontext der obersten Claude-Session. Einmal drücken zum Bestätigen (Augen), erneut drücken für /compact."
     },

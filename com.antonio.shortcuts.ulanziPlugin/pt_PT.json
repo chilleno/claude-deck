@@ -19,6 +19,10 @@
       "Tooltip": "Alterne o estado do Claude no ecrã grande. Premir = automático (o Studio reinicia sozinho)."
     },
     {
+      "Name": "Mudar Sessão",
+      "Tooltip": "Alterna qual sessão do Claude o ecrã grande mostra (um sentido, volta ao início)."
+    },
+    {
       "Name": "Claude Compact",
       "Tooltip": "Compacta o contexto da sessão Claude principal. Prima uma vez para confirmar (olhos) e novamente para executar /compact."
     },

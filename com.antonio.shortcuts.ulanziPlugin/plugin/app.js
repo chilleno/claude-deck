@@ -19,7 +19,7 @@ import { readStates, aggregateState, askingSession } from './claude-state.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PET_GIFS = {};
-for (const [key, file] of Object.entries({ coding: 'coding.gif', magic: 'magic.gif', idle: 'idle.gif', wave: 'wave.gif', dancing: 'dancing.gif', sparkle: 'sparkle.gif', idea: 'idea.gif', loading: 'loading.gif', bonk: 'bonk.gif' })) {
+for (const [key, file] of Object.entries({ coding: 'coding.gif', magic: 'magic.gif', idle: 'idle.gif', wave: 'wave.gif', dancing: 'dancing.gif', sparkle: 'sparkle.gif', idea: 'idea.gif', loading: 'loading.gif', bonk: 'bonk.gif', workers: 'workers.gif' })) {
   try {
     const buf = readFileSync(join(__dirname, '../resources/pets', file));
     PET_GIFS[key] = 'data:image/gif;base64,' + buf.toString('base64');
@@ -65,7 +65,40 @@ const HANDLERS = {
   [`${PLUGIN_UUID}.optok`]: optOk,
   [`${PLUGIN_UUID}.screensetup`]: setupPress,
   [`${PLUGIN_UUID}.compact`]: compactPress,
+  [`${PLUGIN_UUID}.sessionswitch`]: switchPress,
 };
+
+// ---- manual session switch ----------------------------------------------
+// PIN.sid overrides the priority pick on the big key (and for /compact).
+// Cleared automatically when the pinned session's state file disappears.
+const PIN = { sid: null };
+
+// stable cycling/display order — ts changes every event, sid never does
+function sessionOrder(states) {
+  return states.slice().sort((a, b) => a.sid.localeCompare(b.sid));
+}
+
+// the session shown on the big key: pinned if still alive, else top priority
+function displayedSession(states) {
+  if (PIN.sid) {
+    const s = states.find(x => x.sid === PIN.sid);
+    if (s) return s;
+    PIN.sid = null; // pinned session ended — back to priority mode
+  }
+  return aggregateState(states, '');
+}
+
+async function switchPress() {
+  const states = readStates();
+  if (!states.length) { $UD.toast('No Claude sessions'); return; }
+  const sorted = sessionOrder(states);
+  const cur = displayedSession(states);
+  const idx = sorted.findIndex(s => s.sid === cur.sid);
+  const next = sorted[(idx + 1) % sorted.length];
+  PIN.sid = next.sid;
+  $UD.toast(`Session: ${basename(next.cwd || '') || 'claude'}`);
+  refreshBigKeys();
+}
 
 // ---- AskUserQuestion option picker --------------------------------------
 // OPT.key identifies the ask (session + first question) so state resets when
@@ -216,10 +249,10 @@ async function refreshCycleIcon(inst) {
         // stale/false info (e.g. right after boot), so show a placeholder
         dataUrl = renderNoSession();
       } else {
-        // claude-driven display: top-priority session's project name + state,
-        // never the focused terminal tab (that showed things like "node")
-        const best = aggregateState(states, '');
-        const sorted = states.slice().sort((a, b) => a.ts - b.ts);
+        // claude-driven display: pinned or top-priority session's project
+        // name + state, never the focused terminal tab (once showed "node")
+        const best = displayedSession(states);
+        const sorted = sessionOrder(states);
         dataUrl = renderSession({
           name: basename(best.cwd || '') || 'claude',
           idx: sorted.findIndex(s => s.sid === best.sid) + 1,
@@ -529,7 +562,7 @@ async function compactPress() {
   }
   // second press: fire /compact at the session shown on the big key
   COMPACT.confirmUntil = 0;
-  const best = aggregateState(states, '');
+  const best = displayedSession(states);
   const tty = await claudeTtyByCwd(best.cwd);
   if (!tty) { $UD.toast('Session terminal not found'); refreshCompactKeys(); return; }
   const out = await sendTextToTty(tty, '/compact', true);
@@ -537,6 +570,35 @@ async function compactPress() {
   log('sent /compact to', tty);
   $UD.toast(`Compacting ${basename(best.cwd || '') || 'session'}…`);
   refreshCompactKeys(); // bonk appears once the PreCompact hook flips the state
+}
+
+const SWITCH_ACTION = `${PLUGIN_UUID}.sessionswitch`;
+
+function isSwitch(context) {
+  return (($UD.decodeContext(context) || {}).uuid || '') === SWITCH_ACTION;
+}
+
+function refreshSwitchIcon(inst) {
+  try {
+    const states = readStates();
+    const wanted = states.length ? 'gif:workers' : 'png:fail';
+    if (wanted === inst.lastIcon) return;
+    if (wanted === 'gif:workers' && PET_GIFS.workers) {
+      inst.lastIcon = wanted;
+      $UD.setGifDataIcon(inst.context, PET_GIFS.workers);
+    } else if (wanted === 'png:fail' && FAIL_PNG) {
+      inst.lastIcon = wanted;
+      $UD.setBaseDataIcon(inst.context, FAIL_PNG);
+    }
+  } catch (e) {
+    log('switch icon refresh failed', e?.message);
+  }
+}
+
+function startSwitchPolling(inst) {
+  stopCyclePolling(inst);
+  refreshSwitchIcon(inst);
+  inst.timer = setInterval(() => refreshSwitchIcon(inst), PET_POLL_MS);
 }
 
 function ensureInstance(context, settings) {
@@ -549,6 +611,7 @@ function ensureInstance(context, settings) {
     if (isOptKey(context)) startOptPolling(inst);
     if (isSetup(context)) startSetupPolling(inst);
     if (isCompact(context)) startCompactPolling(inst);
+    if (isSwitch(context)) startSwitchPolling(inst);
   } else if (settings && Object.keys(settings).length) {
     inst.settings = { ...settings };
   }
@@ -612,6 +675,9 @@ $UD.onSetActive((msg) => {
     else stopCyclePolling(inst);
   } else if (isCompact(msg.context)) {
     if (msg.active) startCompactPolling(inst);
+    else stopCyclePolling(inst);
+  } else if (isSwitch(msg.context)) {
+    if (msg.active) startSwitchPolling(inst);
     else stopCyclePolling(inst);
   }
 });

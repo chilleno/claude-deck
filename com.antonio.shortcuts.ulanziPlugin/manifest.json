@@ -51,6 +51,15 @@
       "Controllers": ["Keypad"]
     },
     {
+      "Name": "Claude Session Switch",
+      "Tooltip": "Cycle which Claude session the big screen shows (one way, wraps around).",
+      "Icon": "resources/action-sessionswitch.png",
+      "UUID": "com.antonio.deck.shortcuts.sessionswitch",
+      "States": [{ "Image": "resources/action-sessionswitch.png" }],
+      "SupportedInMultiActions": false,
+      "Controllers": ["Keypad"]
+    },
+    {
       "Name": "Claude Compact",
       "Tooltip": "Compact the top Claude session's context. Press once to confirm (eyes), press again to run /compact.",
       "Icon": "resources/action-compact.png",
