@@ -8,7 +8,7 @@ Ulanzi Studio scans `~/Library/Application Support/Ulanzi/UlanziDeck/Plugins/`, 
 
 Claude Code state comes from **hooks**: `hooks/claude-hook.py` runs on every Claude event → one JSON state file per session in `~/Library/Application Support/Ulanzi/UlanziDeck/claude-state/` → plugin polls (pet/opt keys 1 s, big key 3 s). Hooks are wired into every `~/.claude*` profile by `sync-hooks.sh` (runs on install) **or** self-served from the plugin's settings panel ("Enable Claude tracking" button — marketplace installs need no scripts).
 
-## Actions (5)
+## Actions (6)
 
 | Action | What it does |
 |---|---|
@@ -16,11 +16,20 @@ Claude Code state comes from **hooks**: `hooks/claude-hook.py` runs on every Cla
 | **Claude Option Next** | Cycle the options Claude is asking (shown on big key). Wave GIF when a question is live, dancing when idle. |
 | **Claude Option OK** | Answer with the shown option — types the digit into that exact terminal session, no focus steal, auto-submits. Idea GIF live / sparkle idle. |
 | **Claude Screen Setup** | One-press toggle of the big screen: Claude status ↔ built-in widget. Studio restarts itself (~15 s). Icons: approved = showing, jam = hidden, loading = applying. Panel hosts the hook-setup button. |
-| **Claude Session Screen** | The big-key display: top-priority Claude session — project name, status badge, `model · effort · branch` row and a colored context bar — plus the question picker when asking and a confirm flash after OK. Shows a "no session" placeholder when nothing is tracked (never the stale terminal name). Placed on the big key by Screen Setup. Panel hosts the terminal selector. |
+| **Claude Compact** | Compacts the top session's context from the deck. Two-press confirm: yells image idle → press once → eyes image for 8 s → press again → `/compact` typed into that session's terminal. Bonk GIF while the session is compacting. |
+| **Claude Session Screen** | The big-key display: top-priority Claude session — project name, status badge, `model · effort · branch` row and a colored context bar (or a compaction progress bar) — plus the question picker when asking and a confirm flash after OK. Shows a "no session" placeholder when nothing is tracked (never the stale terminal name). Placed on the big key by Screen Setup. Panel hosts the terminal selector. |
 
 All small keys show the fail image when no claude session is tracked.
 
-The session screen is **claude-driven, not terminal-driven**: the name is the session's project folder from Claude state (the focused terminal tab used to leak names like "node"). The extra info comes from the hook's `session_info()`: model + context tokens + git branch parsed from the tail of the session transcript, effort + context-window size from the profile's `settings.json` (`[1m]` in the model id → 1 M window, else 200 k). Context bar: green < 60 %, yellow < 85 %, red above.
+### Question picker (big key + Option keys)
+
+- **Single-select question**: options cycle on the big key, OK types the digit — the TUI auto-submits.
+- **Multi-question ask** (tabbed UI with a Submit tab): the big key shows `CLAUDE ASKS 2/3`, each digit answer auto-advances the TUI tab and the deck follows; after the last question a "press OK to submit" screen sends Enter on the Submit tab.
+- **multiSelect anywhere in the ask**: not deck-drivable (see gotchas) — the big key shows "answer in the terminal" and OK jumps focus to that session.
+
+The session screen is **claude-driven, not terminal-driven**: the name is the session's project folder from Claude state (the focused terminal tab used to leak names like "node"). The extra info comes from the hook's `session_info()`: model + context tokens + git branch parsed from the tail of the session transcript, effort + context-window size from the profile's `settings.json` (`[1m]` in the model id → 1 M window, else 200 k). Context bar: green < 60 %, yellow < 85 %, red above. The `idx/total` session counter only renders with 2+ tracked sessions (`1/1` is noise).
+
+While a session is **compacting**, the context bar is replaced by a yellow progress bar. Claude Code exposes no real compaction percent (only PreCompact fires, then silence until the session resumes), so the bar is time-driven: `min(95, 100·(1−e^(−elapsed/20)))` — eases fast, parks at 95 %, disappears when the state flips. The big key polls at 1 s during compaction (3 s otherwise) so it animates smoothly.
 
 ## State pipeline
 
@@ -30,7 +39,7 @@ Priority: **asking > attention > compacting > working > waiting**. Stale: asking
 |---|---|
 | working | UserPromptSubmit, PreToolUse, PostToolUse |
 | compacting | PreCompact |
-| asking | PreToolUse **or** PermissionRequest of AskUserQuestion/ExitPlanMode (options captured from `tool_input`) |
+| asking | PreToolUse **or** PermissionRequest of AskUserQuestion/ExitPlanMode (all questions captured from `tool_input` into `ask.questions[]`, first mirrored top-level for older readers) |
 | attention | PermissionRequest (other tools); Notification only when message mentions "permission" |
 | waiting | Stop, SessionStart |
 
@@ -82,4 +91,7 @@ Ready: hooks self-setup in-panel · icons per spec (256 + 512@2x plugin, 288 app
 - PI `select` needs explicit background+color (Studio WebView renders invisible text otherwise); script order: constants → eventEmitter → timers → utils → ulanziApi → page scripts
 - Re-send GIFs only on state change — device loops them
 - After a deck answer, `OPT.answeredKey` suppresses re-showing that question while state catches up
+- iTerm `write text ""` is a **no-op** — a bare Enter must be sent as `write text return newline NO` (AppleScript `return` = CR; Ink's TUI only recognizes `\r` as Enter)
+- The Claude Code TUI (Ink) registers **one keypress per stdin write** — batching escape sequences in a single `write text` loses all but the first key
+- multiSelect list rows: options → "Other" free-text → Submit; Enter on a row toggles/selects, submit needs arrow-downs to the Submit row. Driving that from the deck proved unreliable (cursor desync) → deck shows "answer in terminal" for multiSelect asks instead
 - GIF/PNG normalization: 196×196, aspect kept, pad `#1e1f22`, NEAREST upscale (pixel art), preserve durations; originals in `assets/pet-sources/`, normalized in `resources/pets/`
