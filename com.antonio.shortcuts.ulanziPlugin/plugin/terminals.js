@@ -78,13 +78,18 @@ const iterm2 = {
   },
 
   sendByTtyScript(tty, text, newline) {
+    // empty `write text ""` is a no-op in iTerm — a bare Enter must be sent
+    // as an explicit carriage return (AppleScript `return` constant)
+    const write = text === ''
+      ? 'write text return newline NO'
+      : `write text ${asQuote(text)}${newline ? '' : ' newline NO'}`;
     return [
       'tell application "iTerm2"',
       '  repeat with w in windows',
       '    repeat with t in tabs of w',
       '      repeat with s in sessions of t',
       `        if tty of s is ${asQuote(tty)} then`,
-      `          tell s to write text ${asQuote(text)}${newline ? '' : ' newline NO'}`,
+      `          tell s to ${write}`,
       '          return "ok"',
       '        end if',
       '      end repeat',
@@ -94,6 +99,7 @@ const iterm2 = {
       'end tell',
     ].join('\n');
   },
+
 };
 
 // ---- Terminal.app -------------------------------------------------------
@@ -153,6 +159,7 @@ const terminalApp = {
       'end tell',
     ].join('\n');
   },
+
 };
 
 const ADAPTERS = { iterm2, terminal: terminalApp };

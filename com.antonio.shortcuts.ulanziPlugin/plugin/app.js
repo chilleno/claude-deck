@@ -11,7 +11,7 @@ import { spawn } from 'child_process';
 import { homedir } from 'os';
 import { fileURLToPath } from 'url';
 import { dirname, join, basename } from 'path';
-import { renderSession, renderOptions, renderConfirm, renderNoSession } from './renderer.js';
+import { renderSession, renderOptions, renderConfirm, renderNoSession, renderSubmit, renderCheckTerminal } from './renderer.js';
 import { detectTerminals, getTerminalChoice, setTerminalChoice } from './terminals.js';
 import { hookStatus, installHooks } from './hooks-setup.js';
 import { readStates, aggregateState, askingSession } from './claude-state.js';
@@ -68,40 +68,82 @@ const HANDLERS = {
 };
 
 // ---- AskUserQuestion option picker --------------------------------------
-// OPT.key identifies the ask (session + question) so the index resets when a
-// new question appears.
-const OPT = { key: null, index: 0, confirmUntil: 0, answeredKey: null };
+// OPT.key identifies the ask (session + first question) so state resets when
+// a new ask appears. qIdx walks through multi-question asks.
+const OPT = { key: null, index: 0, qIdx: 0, confirmUntil: 0, answeredKey: null };
 
 function currentAsk() {
   const s = askingSession(readStates());
   if (!s) return null;
   const key = s.sid + '::' + s.ask.question;
-  if (OPT.key !== key) { OPT.key = key; OPT.index = 0; }
+  if (OPT.key !== key) { OPT.key = key; OPT.index = 0; OPT.qIdx = 0; }
   return s;
+}
+
+// old state files carry a single flat question; new ones a questions[] list
+function askQuestions(ask) {
+  return Array.isArray(ask.questions) && ask.questions.length ? ask.questions : [ask];
+}
+
+// multiSelect can't be driven from the deck (the TUI's Submit row needs
+// cursor-accurate arrow navigation that proved unreliable) — those asks
+// get a "answer in terminal" screen instead
+function askNeedsTerminal(qs) {
+  return qs.some(q => q.multiSelect);
 }
 
 async function optNext() {
   const s = currentAsk();
   if (!s) { $UD.toast('No Claude question active'); return; }
-  OPT.index = (OPT.index + 1) % s.ask.options.length;
+  const qs = askQuestions(s.ask);
+  if (askNeedsTerminal(qs)) { focusItermByCwd(s.cwd); return; }
+  if (OPT.qIdx >= qs.length) return; // submit screen — nothing to cycle
+  OPT.index = (OPT.index + 1) % qs[OPT.qIdx].options.length;
   refreshBigKeys();
 }
 
 async function optOk() {
   const s = currentAsk();
   if (!s) { $UD.toast('No Claude question active'); return; }
+  const qs = askQuestions(s.ask);
+  if (askNeedsTerminal(qs)) { focusItermByCwd(s.cwd); return; }
   const tty = await claudeTtyByCwd(s.cwd);
   if (!tty) { $UD.toast('Session terminal not found'); return; }
+
+  if (OPT.qIdx >= qs.length) {
+    // every question answered — Enter presses the TUI's Submit tab
+    const out = await sendTextToTty(tty, '', true);
+    if (out.trim() !== 'ok') { $UD.toast('Terminal session not found'); return; }
+    log('submitted answers to', tty);
+    finishAnswer('Answers submitted');
+    return;
+  }
+
+  const q = qs[OPT.qIdx];
   const digit = String(OPT.index + 1);
   const out = await sendTextToTty(tty, digit, false);
-  if (out.trim() !== 'ok') { $UD.toast('iTerm session not found'); return; }
-  log('answered option', digit, 'to', tty);
-  // don't re-show this question while the state file catches up
+  if (out.trim() !== 'ok') { $UD.toast('Terminal session not found'); return; }
+  log('answered option', digit, 'on question', OPT.qIdx + 1, 'to', tty);
+  advanceQuestion(qs, q.options[OPT.index] || '');
+}
+
+// move to the next question; a single-question ask is already submitted by
+// the keypress itself, multi-question asks end on the submit screen
+function advanceQuestion(qs, label) {
+  OPT.qIdx += 1;
+  OPT.index = 0;
+  if (OPT.qIdx >= qs.length && qs.length === 1) {
+    finishAnswer(label);
+  } else {
+    refreshBigKeys();
+  }
+}
+
+function finishAnswer(label) {
+  // don't re-show this ask while the state file catches up
   OPT.answeredKey = OPT.key;
-  // confirmation flash on the big key until the state catches up
-  const chosen = s.ask.options[OPT.index] || '';
   OPT.confirmUntil = Date.now() + 3000;
-  const confirmUrl = renderConfirm(chosen);
+  const confirmUrl = renderConfirm(label);
   for (const inst of INSTANCES.values()) {
     if (isCycle(inst.context) && inst.timer) {
       inst.lastIcon = confirmUrl;
@@ -152,7 +194,21 @@ async function refreshCycleIcon(inst) {
     if (ask && OPT.key === OPT.answeredKey) ask = null; // already answered from the deck
     if (ask) {
       // a question is live — big key becomes the option picker
-      dataUrl = renderOptions({ question: ask.ask.question, options: ask.ask.options, index: OPT.index });
+      const qs = askQuestions(ask.ask);
+      if (askNeedsTerminal(qs)) {
+        dataUrl = renderCheckTerminal();
+      } else if (OPT.qIdx >= qs.length) {
+        dataUrl = renderSubmit(qs.length);
+      } else {
+        const q = qs[OPT.qIdx];
+        dataUrl = renderOptions({
+          question: q.question,
+          options: q.options,
+          index: OPT.index,
+          qIdx: OPT.qIdx,
+          qTotal: qs.length,
+        });
+      }
     } else {
       const states = readStates();
       if (!states.length) {

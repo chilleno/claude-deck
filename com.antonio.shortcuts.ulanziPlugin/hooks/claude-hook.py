@@ -133,14 +133,19 @@ def main():
         state = "asking"
         if data.get("tool_name") == "AskUserQuestion":
             try:
-                q = (data.get("tool_input") or {}).get("questions", [])[0]
-                ask = {
+                questions = [{
                     "question": q.get("question") or "",
                     "header": q.get("header") or "",
                     "options": [o.get("label") or "" for o in q.get("options", [])],
                     "multiSelect": bool(q.get("multiSelect")),
-                }
-            except (IndexError, AttributeError, TypeError):
+                } for q in (data.get("tool_input") or {}).get("questions", [])]
+                if questions:
+                    # first question mirrored top-level for older readers
+                    ask = dict(questions[0])
+                    ask["questions"] = questions
+                else:
+                    ask = None
+            except (AttributeError, TypeError):
                 ask = None
 
     os.makedirs(STATE_DIR, exist_ok=True)

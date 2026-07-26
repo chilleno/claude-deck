@@ -61,9 +61,9 @@ export function renderSession({ name, idx, total, error, status, info, compactEl
   const isCompacting = status === 'compacting' && compactElapsed != null;
   // with the info row + a bar below, the name gets a single compact line
   const tight = hasInfo || isCompacting;
-  const lines = tight ? [splitLines(name || 'untitled', 22)[0]] : splitLines(name || 'untitled', 26);
-  const nameSize = tight ? 36 : (lines.length === 1 && lines[0].length <= 16 ? 44 : 32);
-  const startY = tight ? 96 : (lines.length === 1 ? 118 : 100);
+  const lines = tight ? [splitLines(name || 'untitled', 20)[0]] : splitLines(name || 'untitled', 26);
+  const nameSize = tight ? 42 : (lines.length === 1 && lines[0].length <= 16 ? 46 : 34);
+  const startY = tight ? 100 : (lines.length === 1 ? 122 : 104);
 
   let body =
     `<text x="24" y="42" ${font} font-size="22" font-weight="700" fill="${ACCENT}" letter-spacing="2">SESSION</text>`;
@@ -78,16 +78,16 @@ export function renderSession({ name, idx, total, error, status, info, compactEl
     if (info.effort) parts.push(info.effort);
     if (info.branch) parts.push(info.branch);
     if (parts.length) {
-      body += `<text x="${W / 2}" y="130" ${font} font-size="19" font-weight="600" text-anchor="middle" fill="${MUTED}">${escapeXml(parts.join('  ·  '))}</text>`;
+      body += `<text x="${W / 2}" y="138" ${font} font-size="22" font-weight="600" text-anchor="middle" fill="${MUTED}">${escapeXml(parts.join('  ·  '))}</text>`;
     }
     if (info.ctx_pct != null && !isCompacting) {
       const pct = Math.max(0, Math.min(100, info.ctx_pct));
       const col = pct < 60 ? '#3ecf6b' : pct < 85 ? '#e3b341' : '#e3434c';
-      const bx = 24, by = 144, bh = 10, bw = W - 48 - 62;
+      const bx = 24, by = 160, bh = 12, bw = W - 48 - 68;
       body +=
-        `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="5" fill="#3a3a42"/>` +
-        `<rect x="${bx}" y="${by}" width="${Math.max(bh, bw * pct / 100)}" height="${bh}" rx="5" fill="${col}"/>` +
-        `<text x="${W - 24}" y="${by + bh}" ${font} font-size="18" font-weight="700" text-anchor="end" fill="${col}">${pct}%</text>`;
+        `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="6" fill="#3a3a42"/>` +
+        `<rect x="${bx}" y="${by}" width="${Math.max(bh, bw * pct / 100)}" height="${bh}" rx="6" fill="${col}"/>` +
+        `<text x="${W - 24}" y="${by + bh}" ${font} font-size="20" font-weight="700" text-anchor="end" fill="${col}">${pct}%</text>`;
     }
   }
 
@@ -96,11 +96,11 @@ export function renderSession({ name, idx, total, error, status, info, compactEl
     // so the bar is time-driven: eases toward 95% and holds until state flips
     const pct = Math.min(95, Math.round(100 * (1 - Math.exp(-compactElapsed / 20))));
     const col = STATE_STYLE.compacting.color;
-    const bx = 24, by = 144, bh = 10, bw = W - 48 - 62;
+    const bx = 24, by = 160, bh = 12, bw = W - 48 - 68;
     body +=
-      `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="5" fill="#3a3a42"/>` +
-      `<rect x="${bx}" y="${by}" width="${Math.max(bh, bw * pct / 100)}" height="${bh}" rx="5" fill="${col}"/>` +
-      `<text x="${W - 24}" y="${by + bh}" ${font} font-size="18" font-weight="700" text-anchor="end" fill="${col}">${pct}%</text>`;
+      `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="6" fill="#3a3a42"/>` +
+      `<rect x="${bx}" y="${by}" width="${Math.max(bh, bw * pct / 100)}" height="${bh}" rx="6" fill="${col}"/>` +
+      `<text x="${W - 24}" y="${by + bh}" ${font} font-size="20" font-weight="700" text-anchor="end" fill="${col}">${pct}%</text>`;
   }
 
   if (status && STATE_STYLE[status]) {
@@ -110,14 +110,9 @@ export function renderSession({ name, idx, total, error, status, info, compactEl
       `<text x="144" y="42" ${font} font-size="22" font-weight="700" fill="${st.color}">${st.label}</text>`;
   }
 
-  if (total > 0) {
+  // counter only matters with multiple sessions; 1/1 is noise
+  if (total > 1) {
     body += `<text x="${W - 24}" y="42" ${font} font-size="22" font-weight="600" text-anchor="end" fill="${MUTED}">${idx}/${total}</text>`;
-    // window position dots
-    const dotGap = 22;
-    const startX = W / 2 - ((total - 1) * dotGap) / 2;
-    for (let i = 1; i <= Math.min(total, 12); i++) {
-      body += `<circle cx="${startX + (i - 1) * dotGap}" cy="${H - 24}" r="6" fill="${i === idx ? ACCENT : '#3a3a42'}"/>`;
-    }
   }
 
   return toDataUrl(svgDoc(body));
@@ -151,36 +146,62 @@ export function renderConfirm(option) {
 }
 
 // Options screen shown on the big key while Claude is asking.
-// index = 0-based position of the currently highlighted option.
-export function renderOptions({ question, options, index }) {
+// index = 0-based position of the currently highlighted option;
+// qIdx/qTotal = position in a multi-question ask.
+export function renderOptions({ question, options, index, qIdx = 0, qTotal = 1 }) {
   const font = 'font-family="-apple-system,Helvetica,Arial,sans-serif"';
   const ask = STATE_STYLE.asking.color;
   const total = options.length;
   const cur = options[index] || '';
 
+  const title = qTotal > 1 ? `CLAUDE ASKS ${qIdx + 1}/${qTotal}` : 'CLAUDE ASKS';
   let body =
-    `<text x="24" y="36" ${font} font-size="20" font-weight="700" fill="${ask}" letter-spacing="2">CLAUDE ASKS</text>` +
-    `<text x="${W - 24}" y="36" ${font} font-size="20" font-weight="600" text-anchor="end" fill="${MUTED}">${index + 1}/${total}</text>`;
+    `<text x="24" y="32" ${font} font-size="18" font-weight="700" fill="${ask}" letter-spacing="2">${title}</text>` +
+    `<text x="${W - 24}" y="32" ${font} font-size="18" font-weight="600" text-anchor="end" fill="${MUTED}">${index + 1}/${total}</text>`;
 
-  const q = splitLines(question, 40)[0];
-  body += `<text x="24" y="66" ${font} font-size="20" font-weight="500" fill="${MUTED}">${escapeXml(q)}</text>`;
-
-  const lines = splitLines(cur, 24);
-  const size = lines.length === 1 && lines[0].length <= 18 ? 34 : 26;
-  const startY = lines.length === 1 ? 118 : 106;
-  lines.forEach((line, i) => {
-    body += `<text x="${W / 2}" y="${startY + i * 30}" ${font} font-size="${size}" font-weight="700" text-anchor="middle" fill="${TEXT}">${escapeXml(line)}</text>`;
+  // the question is what the user reads first — give it two big lines
+  const qLines = splitLines(question, 34);
+  qLines.forEach((line, i) => {
+    body += `<text x="${W / 2}" y="${66 + i * 30}" ${font} font-size="25" font-weight="700" text-anchor="middle" fill="${TEXT}">${escapeXml(line)}</text>`;
   });
 
+  const optY = 150;
+  const optLine = splitLines(cur, 26)[0];
+  body += `<text x="${W / 2}" y="${optY}" ${font} font-size="28" font-weight="700" text-anchor="middle" fill="${ask}">${escapeXml(optLine)}</text>`;
+
   // side arrows hint the cycle key
-  body += `<text x="18" y="${startY}" ${font} font-size="30" font-weight="700" fill="${ask}">‹</text>`;
-  body += `<text x="${W - 18}" y="${startY}" ${font} font-size="30" font-weight="700" text-anchor="end" fill="${ask}">›</text>`;
+  body += `<text x="18" y="${optY}" ${font} font-size="30" font-weight="700" fill="${ask}">‹</text>`;
+  body += `<text x="${W - 18}" y="${optY}" ${font} font-size="30" font-weight="700" text-anchor="end" fill="${ask}">›</text>`;
 
   const dotGap = 22;
   const startX = W / 2 - ((Math.min(total, 12) - 1) * dotGap) / 2;
   for (let i = 0; i < Math.min(total, 12); i++) {
-    body += `<circle cx="${startX + i * dotGap}" cy="${H - 20}" r="6" fill="${i === index ? ask : '#3a3a42'}"/>`;
+    body += `<circle cx="${startX + i * dotGap}" cy="${H - 16}" r="6" fill="${i === index ? ask : '#3a3a42'}"/>`;
   }
 
+  return toDataUrl(svgDoc(body));
+}
+
+// multiSelect asks can't be answered from the deck — point at the terminal.
+export function renderCheckTerminal() {
+  const font = 'font-family="-apple-system,Helvetica,Arial,sans-serif"';
+  const ask = STATE_STYLE.asking.color;
+  const body =
+    `<text x="24" y="32" ${font} font-size="18" font-weight="700" fill="${ask}" letter-spacing="2">CLAUDE ASKS · MULTI</text>` +
+    `<text x="${W / 2}" y="96" ${font} font-size="32" font-weight="700" text-anchor="middle" fill="${TEXT}">multi-select question</text>` +
+    `<text x="${W / 2}" y="138" ${font} font-size="24" font-weight="600" text-anchor="middle" fill="${ask}">answer in the terminal</text>` +
+    `<text x="${W / 2}" y="172" ${font} font-size="18" font-weight="600" text-anchor="middle" fill="${MUTED}">press OK to jump there</text>`;
+  return toDataUrl(svgDoc(body));
+}
+
+// Shown after every question of a multi-question ask is answered:
+// one more OK sends Enter, which presses the TUI's Submit tab.
+export function renderSubmit(count) {
+  const font = 'font-family="-apple-system,Helvetica,Arial,sans-serif"';
+  const ask = STATE_STYLE.asking.color;
+  const body =
+    `<text x="24" y="36" ${font} font-size="20" font-weight="700" fill="${ask}" letter-spacing="2">CLAUDE ASKS</text>` +
+    `<text x="${W / 2}" y="104" ${font} font-size="34" font-weight="700" text-anchor="middle" fill="${TEXT}">${count} answered</text>` +
+    `<text x="${W / 2}" y="148" ${font} font-size="24" font-weight="600" text-anchor="middle" fill="${ask}">press OK to submit</text>`;
   return toDataUrl(svgDoc(body));
 }

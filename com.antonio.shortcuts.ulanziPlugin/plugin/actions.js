@@ -50,6 +50,7 @@ export function sendTextToTty(tty, text, newline) {
   return osascript(adapter().sendByTtyScript(tty, text, newline));
 }
 
+
 // Focus the terminal session running the claude whose working dir is `cwd`.
 // Falls back to just activating the terminal app.
 export async function focusItermByCwd(cwd) {
