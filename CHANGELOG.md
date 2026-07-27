@@ -5,6 +5,10 @@ Rule: every user-visible change bumps the version here **and** in the manifest
 (patch = fix/tweak, minor = new action/feature, major = breaking/UUID-level).
 Store zips are built from this version.
 
+## 1.2.1 — 2026-07-27
+
+- Fix: plan-approval prompts (ExitPlanMode) now show on the deck question picker — the hook synthesizes the CLI's 4 plan options (they aren't passed in tool_input), digits map to the TUI numbering
+
 ## 1.2.0 — 2026-07-26
 
 - **New action: Claude Compact** — two-press confirm, types `/compact` into the top session's terminal; bonk GIF while compacting
