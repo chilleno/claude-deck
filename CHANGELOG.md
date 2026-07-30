@@ -5,6 +5,10 @@ Rule: every user-visible change bumps the version here **and** in the manifest
 (patch = fix/tweak, minor = new action/feature, major = breaking/UUID-level).
 Store zips are built from this version.
 
+## 2.0.1 — 2026-07-31
+
+- Fix: context bar stuck at 100 % for 1M-window sessions picked per-session (profile settings.json doesn't know the model) — usage above 200k now proves the 1M window and rescales the percent
+
 ## 2.0.0 — 2026-07-31
 
 - **Breaking: plugin UUID renamed** `com.antonio.deck.shortcuts` → `com.claudedeck.deck.plugin` (all action UUIDs follow; folder renamed to `com.claudedeck.deck.plugin.ulanziPlugin`). Done before first marketplace publish — the UUID is immutable afterwards. Existing manual installs must remove the old plugin folder, install the new zip, and re-add keys.

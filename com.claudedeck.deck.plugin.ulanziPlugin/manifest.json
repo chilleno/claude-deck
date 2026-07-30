@@ -3,7 +3,7 @@
   "Name": "Claude Deck",
   "Description": "Claude Code on the Ulanzi Deck: live status pet, answer questions from the deck, and a big-screen session display.",
   "Author": "Antonio González",
-  "Version": "2.0.0",
+  "Version": "2.0.1",
   "Icon": "resources/icon.png",
   "Category": "Claude Deck",
   "CategoryIcon": "resources/category.svg",
@@ -18,27 +18,45 @@
       "Icon": "resources/action-claudepet.png",
       "PropertyInspectorPath": "property-inspector/claudepet.html",
       "UUID": "com.claudedeck.deck.plugin.claudepet",
-      "States": [{ "Image": "resources/action-claudepet.png" }],
+      "States": [
+        {
+          "Image": "resources/action-claudepet.png"
+        }
+      ],
       "SupportedInMultiActions": false,
-      "Controllers": ["Keypad"]
+      "Controllers": [
+        "Keypad"
+      ]
     },
     {
       "Name": "Claude Option Next",
       "Tooltip": "Cycle through the options Claude is asking about (shown on the big key).",
       "Icon": "resources/action-optnext.png",
       "UUID": "com.claudedeck.deck.plugin.optnext",
-      "States": [{ "Image": "resources/action-optnext.png" }],
+      "States": [
+        {
+          "Image": "resources/action-optnext.png"
+        }
+      ],
       "SupportedInMultiActions": false,
-      "Controllers": ["Keypad"]
+      "Controllers": [
+        "Keypad"
+      ]
     },
     {
       "Name": "Claude Option OK",
       "Tooltip": "Answer Claude with the option currently shown on the big key.",
       "Icon": "resources/action-optok.png",
       "UUID": "com.claudedeck.deck.plugin.optok",
-      "States": [{ "Image": "resources/action-optok.png" }],
+      "States": [
+        {
+          "Image": "resources/action-optok.png"
+        }
+      ],
       "SupportedInMultiActions": false,
-      "Controllers": ["Keypad"]
+      "Controllers": [
+        "Keypad"
+      ]
     },
     {
       "Name": "Claude Screen Setup",
@@ -46,27 +64,45 @@
       "Icon": "resources/action-screensetup.png",
       "PropertyInspectorPath": "property-inspector/screensetup.html",
       "UUID": "com.claudedeck.deck.plugin.screensetup",
-      "States": [{ "Image": "resources/action-screensetup.png" }],
+      "States": [
+        {
+          "Image": "resources/action-screensetup.png"
+        }
+      ],
       "SupportedInMultiActions": false,
-      "Controllers": ["Keypad"]
+      "Controllers": [
+        "Keypad"
+      ]
     },
     {
       "Name": "Claude Session Switch",
       "Tooltip": "Cycle which Claude session the big screen shows (one way, wraps around).",
       "Icon": "resources/action-sessionswitch.png",
       "UUID": "com.claudedeck.deck.plugin.sessionswitch",
-      "States": [{ "Image": "resources/action-sessionswitch.png" }],
+      "States": [
+        {
+          "Image": "resources/action-sessionswitch.png"
+        }
+      ],
       "SupportedInMultiActions": false,
-      "Controllers": ["Keypad"]
+      "Controllers": [
+        "Keypad"
+      ]
     },
     {
       "Name": "Claude Compact",
       "Tooltip": "Compact the top Claude session's context. Press once to confirm (eyes), press again to run /compact.",
       "Icon": "resources/action-compact.png",
       "UUID": "com.claudedeck.deck.plugin.compact",
-      "States": [{ "Image": "resources/action-compact.png" }],
+      "States": [
+        {
+          "Image": "resources/action-compact.png"
+        }
+      ],
       "SupportedInMultiActions": false,
-      "Controllers": ["Keypad"]
+      "Controllers": [
+        "Keypad"
+      ]
     },
     {
       "Name": "Claude Session Screen",
@@ -74,11 +110,24 @@
       "Icon": "resources/action-itermcycle.png",
       "PropertyInspectorPath": "property-inspector/itermcycle.html",
       "UUID": "com.claudedeck.deck.plugin.itermcycle",
-      "States": [{ "Image": "resources/action-itermcycle.png" }],
+      "States": [
+        {
+          "Image": "resources/action-itermcycle.png"
+        }
+      ],
       "SupportedInMultiActions": false,
-      "Controllers": ["Keypad"]
+      "Controllers": [
+        "Keypad"
+      ]
     }
   ],
-  "OS": [{ "Platform": "mac", "MinimumVersion": "10.15" }],
-  "Software": { "MinVersion": "3.0.11" }
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.15"
+    }
+  ],
+  "Software": {
+    "MinVersion": "3.0.11"
+  }
 }

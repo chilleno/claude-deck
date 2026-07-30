@@ -79,6 +79,11 @@ def session_info(data):
     except (OSError, ValueError):
         pass
     if info.get("ctx_used"):
+        # settings.json only knows the profile default model; a 1M model picked
+        # per-session is invisible there. But usage can never exceed the window,
+        # so anything past 200k proves the session runs the 1M variant.
+        if info["ctx_used"] > 200000:
+            limit = 1000000
         info["ctx_pct"] = min(100, int(round(info["ctx_used"] * 100.0 / limit)))
     return info or None
 
