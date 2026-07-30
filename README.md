@@ -2,6 +2,10 @@
 
 Claude Code on the Ulanzi Deck D200 (macOS): live status pet, answer Claude's questions from deck keys, and a big-screen session display. Fully portable (no hardcoded paths) and marketplace-ready.
 
+<p align="center">
+  <img src="assets/readme/deck-live.png" alt="Claude Deck live on an Ulanzi D200" width="640">
+</p>
+
 ## How it works
 
 Ulanzi Studio scans `~/Library/Application Support/Ulanzi/UlanziDeck/Plugins/`, launches the plugin's `plugin/app.js` with its bundled Node.js (`127.0.0.1 3906 <lang>`), and talks WebSocket on `localhost:3906`. SDK client in `plugin/plugin-common-node/`.
@@ -21,6 +25,38 @@ Claude Code state comes from **hooks**: `hooks/claude-hook.py` runs on every Cla
 | **Claude Session Screen** | The big-key display: top-priority Claude session — project name, status badge, `model · effort · branch` row and a colored context bar (or a compaction progress bar) — plus the question picker when asking and a confirm flash after OK. Shows a "no session" placeholder when nothing is tracked (never the stale terminal name). Placed on the big key by Screen Setup. Panel hosts the terminal selector. |
 
 All small keys show the fail image when no claude session is tracked.
+
+### Key guide — what each GIF means
+
+**Claude Pet** — one glance, all sessions:
+
+| <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/coding.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/magic.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/idle.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/fail.png" width="72"> |
+|:---:|:---:|:---:|:---:|
+| working / compacting | asking or needs you | idle | no session tracked |
+
+**Option Next / Option OK** — the question-answering pair:
+
+| <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/wave.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/dancing.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/idea.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/sparkle.gif" width="72"> |
+|:---:|:---:|:---:|:---:|
+| Next: question live | Next: idle | OK: question live | OK: idle |
+
+**Claude Compact** — two-press confirm:
+
+| <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/yells.png" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/eyes.png" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/bonk.gif" width="72"> |
+|:---:|:---:|:---:|
+| ready | press again to confirm | compacting… |
+
+**Claude Screen Setup** — big-screen toggle:
+
+| <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/approved.png" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/idle.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/loading.gif" width="72"> |
+|:---:|:---:|:---:|
+| big screen showing Claude | big screen hidden | applying (Studio restarting) |
+
+**Claude Session Switch** — session pinning:
+
+| <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/workers.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/fail.png" width="72"> |
+|:---:|:---:|
+| sessions tracked — press to cycle | nothing to switch |
 
 ### Question picker (big key + Option keys)
 
