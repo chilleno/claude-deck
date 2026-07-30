@@ -3,7 +3,7 @@
   "Name": "Claude Deck",
   "Description": "Claude Code on the Ulanzi Deck: live status pet, answer questions from the deck, and a big-screen session display.",
   "Author": "Antonio González",
-  "Version": "2.0.1",
+  "Version": "2.0.2",
   "Icon": "resources/icon.png",
   "Category": "Claude Deck",
   "CategoryIcon": "resources/category.svg",

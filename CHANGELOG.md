@@ -5,6 +5,11 @@ Rule: every user-visible change bumps the version here **and** in the manifest
 (patch = fix/tweak, minor = new action/feature, major = breaking/UUID-level).
 Store zips are built from this version.
 
+## 2.0.2 — 2026-07-31
+
+- Security: bump `ws` 8.18.0 → 8.21.0 (memory-exhaustion DoS + uninitialized memory disclosure advisories; low practical risk — socket only talks to Studio on localhost)
+- package.json license field fixed to MIT
+
 ## 2.0.1 — 2026-07-31
 
 - Fix: context bar stuck at 100 % for 1M-window sessions picked per-session (profile settings.json doesn't know the model) — usage above 200k now proves the 1M window and rescales the percent

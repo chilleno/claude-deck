@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Personal Ulanzi Deck shortcuts: shell commands, app launching, hotkeys, iTerm/Claude Code controls.",
   "author": "Antonio González",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": true,
   "main": "plugin/app.js",
   "type": "module",
@@ -11,6 +11,6 @@
     "start": "node plugin/app.js"
   },
   "dependencies": {
-    "ws": "8.18.0"
+    "ws": "8.21.0"
   }
 }
