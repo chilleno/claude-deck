@@ -10,7 +10,12 @@ mkdir -p "$DEST"
 rsync -a --delete --exclude node_modules "$SRC/" "$DEST/"
 
 cd "$DEST"
-npm install --omit=dev --no-audit --no-fund
+# pnpm preferred; falls back to npm so a plain-Node machine still installs
+if command -v pnpm >/dev/null 2>&1; then
+  pnpm install --prod --config.node-linker=hoisted
+else
+  npm install --omit=dev --no-audit --no-fund
+fi
 
 "$ROOT/sync-hooks.sh"
 

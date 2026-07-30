@@ -119,7 +119,7 @@ Installing from a clone instead: run `./install.sh` (rsyncs the plugin, installs
 ## Install / update (dev loop)
 
 ```sh
-./install.sh   # rsync plugin + npm install + sync-hooks.sh across all profiles
+./install.sh   # rsync plugin + pnpm install (npm fallback) + sync-hooks.sh across all profiles
 ```
 
 Quit + relaunch Studio (sometimes needs a second `open -a "Ulanzi Studio"`).
