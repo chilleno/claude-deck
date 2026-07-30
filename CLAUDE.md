@@ -20,7 +20,7 @@ One plugin (`com.antonio.shortcuts.ulanziPlugin/`, UUID `com.antonio.deck.shortc
 - Plugin ↔ Studio: WebSocket `localhost:3906`; SDK in `plugin/plugin-common-node/` — don't modify it
 - UUIDs: plugin exactly 4 dot-segments, actions 5; wrong count → silent load failure. UUID immutable once marketplace-published
 - State pipeline: hooks in ALL `~/.claude*` profiles → `hooks/claude-hook.py` → per-session JSON in `~/Library/Application Support/Ulanzi/UlanziDeck/claude-state/` → plugin polls (pet/opt 1s, big key 3s)
-- Hook wiring: `sync-hooks.sh` (dev) OR in-panel "Enable Claude tracking" button (`plugin/hooks-setup.js`, marketplace path). Antonio's profiles: `jarvis` → `~/.claude-personal`, `jarvis-even` → `~/.claude-even`, plain → `~/.claude`
+- Hook wiring: `sync-hooks.sh` (dev) OR in-panel "Enable Claude tracking" button (`plugin/hooks-setup.js`, marketplace path). Both cover every `~/.claude*` profile found at runtime
 - State priority: asking > attention > compacting > working > waiting; asking/working/compacting stale >15 min → waiting; >12 h ignored
 - Big key is claude-driven: shows top-priority session's project folder + state + `info` block (model/ctx_pct/branch from transcript tail, effort + window size from profile settings.json, `[1m]` → 1M); no tracked sessions → `renderNoSession()` placeholder — never query/show the focused terminal tab (leaked "node" once, stale after boot). `idx/total` counter only when 2+ sessions; no position dots
 - Compacting: big key swaps ctx bar for a time-driven yellow progress bar — no real percent exists (only PreCompact fires), `min(95, 100·(1−e^(−elapsed/20)))`, holds at 95% till state flips; poll drops 3s→1s during compacting

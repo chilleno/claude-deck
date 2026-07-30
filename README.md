@@ -8,7 +8,7 @@ Ulanzi Studio scans `~/Library/Application Support/Ulanzi/UlanziDeck/Plugins/`, 
 
 Claude Code state comes from **hooks**: `hooks/claude-hook.py` runs on every Claude event → one JSON state file per session in `~/Library/Application Support/Ulanzi/UlanziDeck/claude-state/` → plugin polls (pet/opt keys 1 s, big key 3 s). Hooks are wired into every `~/.claude*` profile by `sync-hooks.sh` (runs on install) **or** self-served from the plugin's settings panel ("Enable Claude tracking" button — marketplace installs need no scripts).
 
-## Actions (6)
+## Actions (7)
 
 | Action | What it does |
 |---|---|
@@ -16,6 +16,7 @@ Claude Code state comes from **hooks**: `hooks/claude-hook.py` runs on every Cla
 | **Claude Option Next** | Cycle the options Claude is asking (shown on big key). Wave GIF when a question is live, dancing when idle. |
 | **Claude Option OK** | Answer with the shown option — types the digit into that exact terminal session, no focus steal, auto-submits. Idea GIF live / sparkle idle. |
 | **Claude Screen Setup** | One-press toggle of the big screen: Claude status ↔ built-in widget. Studio restarts itself (~15 s). Icons: approved = showing, jam = hidden, loading = applying. Panel hosts the hook-setup button. |
+| **Claude Session Switch** | Pins and cycles which tracked session the big key shows (one way, wraps around). With several sessions asking at once, the pin also chooses which question shows/answers first. |
 | **Claude Compact** | Compacts the top session's context from the deck. Two-press confirm: yells image idle → press once → eyes image for 8 s → press again → `/compact` typed into that session's terminal. Bonk GIF while the session is compacting. |
 | **Claude Session Screen** | The big-key display: top-priority Claude session — project name, status badge, `model · effort · branch` row and a colored context bar (or a compaction progress bar) — plus the question picker when asking and a confirm flash after OK. Shows a "no session" placeholder when nothing is tracked (never the stale terminal name). Placed on the big key by Screen Setup. Panel hosts the terminal selector. |
 
@@ -95,3 +96,12 @@ Ready: hooks self-setup in-panel · icons per spec (256 + 512@2x plugin, 288 app
 - The Claude Code TUI (Ink) registers **one keypress per stdin write** — batching escape sequences in a single `write text` loses all but the first key
 - multiSelect list rows: options → "Other" free-text → Submit; Enter on a row toggles/selects, submit needs arrow-downs to the Submit row. Driving that from the deck proved unreliable (cursor desync) → deck shows "answer in terminal" for multiSelect asks instead
 - GIF/PNG normalization: 196×196, aspect kept, pad `#1e1f22`, NEAREST upscale (pixel art), preserve durations; originals in `assets/pet-sources/`, normalized in `resources/pets/`
+
+## License & credits
+
+Code is MIT licensed (see `LICENSE`).
+
+The pet GIFs/PNGs in `assets/pet-sources/` and `resources/pets/` are community/meme
+art collected for personal use; ownership of some pieces is unknown. If you are the
+author of any of them and want credit or removal, open an issue and it will be
+handled right away.
