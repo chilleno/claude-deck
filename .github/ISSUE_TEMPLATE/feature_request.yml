@@ -1,0 +1,27 @@
+name: Feature request
+description: Suggest an idea for Claude Deck
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What are you trying to do with the deck that you can't today?
+      placeholder: e.g. I want to answer multiSelect questions without touching the terminal
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How should it work on the deck? Which key(s), what shows on the big screen?
+    validations:
+      required: true
+  - type: input
+    id: setup
+    attributes:
+      label: Your setup
+      placeholder: "e.g. D200, macOS 15, iTerm2"
+    validations:
+      required: false

@@ -1,0 +1,38 @@
+name: Bug report
+description: Something on the deck is wrong or stuck
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you expect, what did you get?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start a Claude session in iTerm2
+        2. ...
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      placeholder: "plugin 1.2.1, Ulanzi Studio 3.0.11, macOS 15, iTerm2 / Terminal.app"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Hook event log (optional)
+      description: >
+        Run `touch "~/Library/Application Support/Ulanzi/UlanziDeck/claude-state/.debug"`,
+        reproduce, then paste the tail of `claude-state/events.log`. Delete `.debug` after.
+      render: text
+    validations:
+      required: false

@@ -58,6 +58,28 @@ Adapter layer (`plugin/terminals.js`): all terminal-specific AppleScript isolate
 
 Studio hard-wires the slot to its built-in widget; the widget mode list is compiled into the signed binary — not extensible, plugins can't be dragged there. Managed instead by **Claude Screen Setup**: press → `hooks/bigkey-toggle.sh` (detached) quits Studio, `hooks/patch-bigkey.py` patches per the `.bigkey-desired` flag, relaunches with retries; all logged to `claude-state/bigkey-watcher.log`. On show, the replaced widget entry is saved (`.bigkey-widget.json`) and restored exactly on hide — restoring a background-empty mode leaves a stale frame that looks like a failed hide. `hooks/bigkey-watcher.sh` re-applies after Studio strips the key on page edits. Manual fallback: `./apply-bigkey.sh`.
 
+## Compatibility
+
+| Requirement | Supported |
+|---|---|
+| OS | **macOS 10.15+ only** (AppleScript terminal injection — no Windows/Linux) |
+| Ulanzi Studio | ≥ 3.0.11 |
+| Device | Ulanzi D200 (big-screen features target its 458×196 center display; keys work on other Ulanzi decks) |
+| Terminal | iTerm2 or Terminal.app (Claude Code running inside one of them) |
+| Claude Code | any recent version with hooks support |
+| Python | `python3` on PATH (macOS ships one; hooks use stdlib only) |
+
+## Install (users)
+
+1. Download `com.antonio.shortcuts.ulanziPlugin.zip` from the [latest release](https://github.com/chilleno/claude-deck/releases) (dependencies included).
+2. Unzip into Ulanzi Studio's plugin folder so you end up with
+   `~/Library/Application Support/Ulanzi/UlanziDeck/Plugins/com.antonio.shortcuts.ulanziPlugin/`.
+3. Quit and relaunch Ulanzi Studio (sometimes needs a second `open -a "Ulanzi Studio"`).
+4. Drag the **Claude Deck** actions onto keys. Open the **Claude Screen Setup** key's panel and press **"Enable Claude tracking"** — this wires the hooks into every `~/.claude*` profile (backs up each settings.json it touches). Restart running Claude sessions once so hooks load.
+5. macOS permissions (one-time prompts): Accessibility for Ulanzi Studio + Automation → your terminal.
+
+Installing from a clone instead: run `./install.sh` (rsyncs the plugin, installs the `ws` dependency, syncs hooks).
+
 ## Install / update (dev loop)
 
 ```sh
