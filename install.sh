@@ -3,8 +3,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-SRC="$ROOT/com.antonio.shortcuts.ulanziPlugin"
-DEST="$HOME/Library/Application Support/Ulanzi/UlanziDeck/Plugins/com.antonio.shortcuts.ulanziPlugin"
+SRC="$ROOT/com.claudedeck.deck.plugin.ulanziPlugin"
+DEST="$HOME/Library/Application Support/Ulanzi/UlanziDeck/Plugins/com.claudedeck.deck.plugin.ulanziPlugin"
 
 mkdir -p "$DEST"
 rsync -a --delete --exclude node_modules "$SRC/" "$DEST/"

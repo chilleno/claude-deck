@@ -9,7 +9,7 @@ import uuid
 
 BASE = os.path.expanduser("~/Library/Application Support/Ulanzi/UlanziDeck")
 
-ACTION_UUID = "com.antonio.deck.shortcuts.itermcycle"
+ACTION_UUID = "com.claudedeck.deck.plugin.itermcycle"
 
 
 def make_entry(small_view_mode):
@@ -19,10 +19,10 @@ def make_entry(small_view_mode):
         "ActionParam": {"mode": "windows", "SmallViewMode": 2},
         "LinkedTitle": True,
         "Name": "Cycle iTerm Sessions",
-        "Plugin": {"Name": "Antonio Shortcuts", "UUID": "com.antonio.deck.shortcuts", "Version": "1.0.0"},
+        "Plugin": {"Name": "Claude Deck", "UUID": "com.claudedeck.deck.plugin", "Version": "1.0.0"},
         "State": 0,
         "ViewParam": [{
-            "Icon": os.path.join(BASE, "Plugins/com.antonio.shortcuts.ulanziPlugin/resources/action-itermcycle.png"),
+            "Icon": os.path.join(BASE, "Plugins/com.claudedeck.deck.plugin.ulanziPlugin/resources/action-itermcycle.png"),
             "IconRel": "",
         }],
     }

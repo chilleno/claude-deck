@@ -4,15 +4,15 @@
 
 ## What this is
 
-One plugin (`com.antonio.shortcuts.ulanziPlugin/`, UUID `com.antonio.deck.shortcuts`, name "Claude Deck") with 6 actions: Claude Pet (status GIFs, press = jump to session), Option Next + Option OK (answer AskUserQuestion from the deck), Claude Screen Setup (one-press big-screen toggle + hook self-setup panel), Claude Compact (two-press confirm → `/compact` into top session's terminal; bonk GIF while compacting), Claude Session Screen (big-key display; also hosts the terminal selector).
+One plugin (`com.claudedeck.deck.plugin.ulanziPlugin/`, UUID `com.claudedeck.deck.plugin`, name "Claude Deck") with 6 actions: Claude Pet (status GIFs, press = jump to session), Option Next + Option OK (answer AskUserQuestion from the deck), Claude Screen Setup (one-press big-screen toggle + hook self-setup panel), Claude Compact (two-press confirm → `/compact` into top session's terminal; bonk GIF while compacting), Claude Session Screen (big-key display; also hosts the terminal selector).
 
 ## Deploy loop (every change)
 
-1. Edit code in this repo only — runtime copy at `~/Library/Application Support/Ulanzi/UlanziDeck/Plugins/com.antonio.shortcuts.ulanziPlugin/`
+1. Edit code in this repo only — runtime copy at `~/Library/Application Support/Ulanzi/UlanziDeck/Plugins/com.claudedeck.deck.plugin.ulanziPlugin/`
 2. Syntax check: `"/Applications/Ulanzi Studio.app/Contents/MacOS/NodeJS/node" --check <file>`
 3. `./install.sh` (writes outside project — ask Antonio first, every time; also runs `sync-hooks.sh`)
 4. Restart rules: plugin JS/GIFs → Studio restart; `hooks/*.py` + `hooks/*.sh` → NO restart (read per run); hook entries in settings.json → claude session restart
-5. Studio restart: `osascript -e 'tell application "Ulanzi Studio" to quit'; sleep 4; open -a "Ulanzi Studio"` — sometimes needs a second `open -a`; verify `ps aux | grep "[c]om.antonio.shortcuts"`
+5. Studio restart: `osascript -e 'tell application "Ulanzi Studio" to quit'; sleep 4; open -a "Ulanzi Studio"` — sometimes needs a second `open -a`; verify `ps aux | grep "[c]om.claudedeck"`
 6. Version track: every user-visible change → bump `Version` in manifest.json + entry in `CHANGELOG.md` (patch fix / minor feature / major breaking). Store zip built from manifest version
 
 ## Key facts (don't rediscover)

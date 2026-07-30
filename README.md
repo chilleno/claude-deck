@@ -30,31 +30,31 @@ All small keys show the fail image when no claude session is tracked.
 
 **Claude Pet** — one glance, all sessions:
 
-| <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/coding.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/magic.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/idle.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/fail.png" width="72"> |
+| <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/coding.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/magic.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/idle.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/fail.png" width="72"> |
 |:---:|:---:|:---:|:---:|
 | working / compacting | asking or needs you | idle | no session tracked |
 
 **Option Next / Option OK** — the question-answering pair:
 
-| <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/wave.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/dancing.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/idea.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/sparkle.gif" width="72"> |
+| <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/wave.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/dancing.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/idea.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/sparkle.gif" width="72"> |
 |:---:|:---:|:---:|:---:|
 | Next: question live | Next: idle | OK: question live | OK: idle |
 
 **Claude Compact** — two-press confirm:
 
-| <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/yells.png" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/eyes.png" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/bonk.gif" width="72"> |
+| <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/yells.png" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/eyes.png" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/bonk.gif" width="72"> |
 |:---:|:---:|:---:|
 | ready | press again to confirm | compacting… |
 
 **Claude Screen Setup** — big-screen toggle:
 
-| <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/approved.png" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/idle.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/loading.gif" width="72"> |
+| <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/approved.png" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/idle.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/loading.gif" width="72"> |
 |:---:|:---:|:---:|
 | big screen showing Claude | big screen hidden | applying (Studio restarting) |
 
 **Claude Session Switch** — session pinning:
 
-| <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/workers.gif" width="72"> | <img src="com.antonio.shortcuts.ulanziPlugin/resources/pets/fail.png" width="72"> |
+| <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/workers.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/fail.png" width="72"> |
 |:---:|:---:|
 | sessions tracked — press to cycle | nothing to switch |
 
@@ -107,9 +107,9 @@ Studio hard-wires the slot to its built-in widget; the widget mode list is compi
 
 ## Install (users)
 
-1. Download `com.antonio.shortcuts.ulanziPlugin.zip` from the [latest release](https://github.com/chilleno/claude-deck/releases) (dependencies included).
+1. Download `com.claudedeck.deck.plugin.ulanziPlugin.zip` from the [latest release](https://github.com/chilleno/claude-deck/releases) (dependencies included).
 2. Unzip into Ulanzi Studio's plugin folder so you end up with
-   `~/Library/Application Support/Ulanzi/UlanziDeck/Plugins/com.antonio.shortcuts.ulanziPlugin/`.
+   `~/Library/Application Support/Ulanzi/UlanziDeck/Plugins/com.claudedeck.deck.plugin.ulanziPlugin/`.
 3. Quit and relaunch Ulanzi Studio (sometimes needs a second `open -a "Ulanzi Studio"`).
 4. Drag the **Claude Deck** actions onto keys. Open the **Claude Screen Setup** key's panel and press **"Enable Claude tracking"** — this wires the hooks into every `~/.claude*` profile (backs up each settings.json it touches). Restart running Claude sessions once so hooks load.
 5. macOS permissions (one-time prompts): Accessibility for Ulanzi Studio + Automation → your terminal.
@@ -139,7 +139,7 @@ Ready: hooks self-setup in-panel · icons per spec (256 + 512@2x plugin, 288 app
 - Hook event log: `touch claude-state/.debug` → `claude-state/events.log` (delete `.debug` after — and always delete any fake `decktest.json`)
 - Test hook: pipe fake event JSON into `hooks/claude-hook.py`, inspect `claude-state/<sid>.json`
 - Which profile a running claude uses: `ps eww <pid> | grep -o 'CLAUDE_CONFIG_DIR=[^ ]*'`
-- Plugin process: `ps aux | grep com.antonio.shortcuts`
+- Plugin process: `ps aux | grep com.claudedeck`
 
 ## Gotchas (hard-won)
 

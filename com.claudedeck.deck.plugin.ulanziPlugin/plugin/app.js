@@ -56,7 +56,7 @@ const STATE_GIF = {
 };
 
 
-const PLUGIN_UUID = 'com.antonio.deck.shortcuts';
+const PLUGIN_UUID = 'com.claudedeck.deck.plugin';
 
 const HANDLERS = {
   [`${PLUGIN_UUID}.itermcycle`]: itermCycle,
@@ -212,7 +212,7 @@ const $UD = new UlanziApi();
 const INSTANCES = new Map();
 
 function log(...args) {
-  console.log('[antonio-shortcuts]', ...args);
+  console.log('[claude-deck]', ...args);
 }
 
 function isCycle(context) {

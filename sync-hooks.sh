@@ -10,7 +10,7 @@ import os
 import shutil
 
 HOOK_REL = ("Library/Application Support/Ulanzi/UlanziDeck/"
-            "Plugins/com.antonio.shortcuts.ulanziPlugin/hooks/claude-hook.py")
+            "Plugins/com.claudedeck.deck.plugin.ulanziPlugin/hooks/claude-hook.py")
 CMD = "python3 '%s'" % os.path.join(os.path.expanduser("~"), HOOK_REL)
 EVENTS = [
     "UserPromptSubmit", "PreToolUse", "PostToolUse", "PreCompact",
