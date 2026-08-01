@@ -2,9 +2,14 @@
   "UUID": "com.claudedeck.deck.plugin",
   "Name": "Claude Deck",
   "Description": "Claude Code on the Ulanzi Deck: live status pet, answer questions from the deck, and a big-screen session display.",
+  "Overview": "See and control every Claude Code session from your Ulanzi Deck.",
   "Author": "Antonio González",
-  "Version": "2.0.2",
+  "Version": "2.0.3",
   "Icon": "resources/icon.png",
+  "Banner": [
+    "resources/banners/banner-1.png",
+    "resources/banners/banner-2.png"
+  ],
   "Category": "Claude Deck",
   "CategoryIcon": "resources/category.svg",
   "CodePath": "plugin/app.js",
@@ -20,6 +25,7 @@
       "UUID": "com.claudedeck.deck.plugin.claudepet",
       "States": [
         {
+          "Name": "Claude Pet",
           "Image": "resources/action-claudepet.png"
         }
       ],
@@ -35,6 +41,7 @@
       "UUID": "com.claudedeck.deck.plugin.optnext",
       "States": [
         {
+          "Name": "Claude Option Next",
           "Image": "resources/action-optnext.png"
         }
       ],
@@ -50,6 +57,7 @@
       "UUID": "com.claudedeck.deck.plugin.optok",
       "States": [
         {
+          "Name": "Claude Option OK",
           "Image": "resources/action-optok.png"
         }
       ],
@@ -66,6 +74,7 @@
       "UUID": "com.claudedeck.deck.plugin.screensetup",
       "States": [
         {
+          "Name": "Claude Screen Setup",
           "Image": "resources/action-screensetup.png"
         }
       ],
@@ -81,6 +90,7 @@
       "UUID": "com.claudedeck.deck.plugin.sessionswitch",
       "States": [
         {
+          "Name": "Claude Session Switch",
           "Image": "resources/action-sessionswitch.png"
         }
       ],
@@ -96,6 +106,7 @@
       "UUID": "com.claudedeck.deck.plugin.compact",
       "States": [
         {
+          "Name": "Claude Compact",
           "Image": "resources/action-compact.png"
         }
       ],
@@ -112,6 +123,7 @@
       "UUID": "com.claudedeck.deck.plugin.itermcycle",
       "States": [
         {
+          "Name": "Claude Session Screen",
           "Image": "resources/action-itermcycle.png"
         }
       ],

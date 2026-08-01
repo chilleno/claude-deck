@@ -5,6 +5,10 @@ Rule: every user-visible change bumps the version here **and** in the manifest
 (patch = fix/tweak, minor = new action/feature, major = breaking/UUID-level).
 Store zips are built from this version.
 
+## 2.0.3 — 2026-07-31
+
+- Guideline compliance (Ulanzi publication guidelines, bbs tid=464): manifest `Overview` one-liner, `Banner` array with banners bundled in the package (`resources/banners/`), `Name` added to every action's States entry; `pnpm-lock.yaml` excluded from the store zip
+
 ## 2.0.2 — 2026-07-31
 
 - Security: bump `ws` 8.18.0 → 8.21.0 (memory-exhaustion DoS + uninitialized memory disclosure advisories; low practical risk — socket only talks to Studio on localhost)
