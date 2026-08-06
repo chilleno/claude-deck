@@ -29,6 +29,10 @@
     {
       "Name": "Pantalla de Sesión",
       "Tooltip": "La pantalla grande: nombre de sesión, estado y selector de preguntas."
+    },
+    {
+      "Name": "Claude Clear",
+      "Tooltip": "Borra el historial de conversación de la sesión Claude principal. Pulsa una vez para confirmar (ojos) y de nuevo para ejecutar /clear."
     }
   ],
   "Localization": {}

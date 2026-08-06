@@ -5,6 +5,15 @@ Rule: every user-visible change bumps the version here **and** in the manifest
 (patch = fix/tweak, minor = new action/feature, major = breaking/UUID-level).
 Store zips are built from this version.
 
+## 2.1.0 — 2026-08-06
+
+- **New action: Claude Clear** — two-press confirm (8 s window, eyes image while armed), types `/clear` into the top session's terminal to wipe its conversation history; own confirm window so it never cross-arms with Claude Compact
+- Clear/Compact refuse a press while a question is pending: `asking` wins the priority pick, so the target would have been the asker and the submitting newline would have confirmed the highlighted option in the open picker instead of running the command. Both now toast `Answer the question first` and disarm
+- Clear's compaction guard is scoped to its target session (was: any session anywhere), always toasts instead of swallowing the press, disarms the confirm window, and shows the bonk GIF so the refusal is visible
+- New icon `resources/action-clear.png` (cyan variant of the compact art) so the two keys are distinguishable on the deck; Name/Tooltip added to all 9 locale files
+- 8 actions total (was 7)
+- Store zip (`assets/store/…zip`) rebuilt from the installed plugin folder (includes `node_modules/ws`; excludes `pnpm-lock.yaml`, `__pycache__`, `.DS_Store`, logs)
+
 ## 2.0.3 — 2026-07-31
 
 - Guideline compliance (Ulanzi publication guidelines, bbs tid=464): manifest `Overview` one-liner, `Banner` array with banners bundled in the package (`resources/banners/`), `Name` added to every action's States entry; `pnpm-lock.yaml` excluded from the store zip

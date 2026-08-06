@@ -4,7 +4,7 @@
   "Description": "Claude Code on the Ulanzi Deck: live status pet, answer questions from the deck, and a big-screen session display.",
   "Overview": "See and control every Claude Code session from your Ulanzi Deck.",
   "Author": "Antonio González",
-  "Version": "2.0.3",
+  "Version": "2.1.0",
   "Icon": "resources/icon.png",
   "Banner": [
     "resources/banners/banner-1.png",
@@ -125,6 +125,22 @@
         {
           "Name": "Claude Session Screen",
           "Image": "resources/action-itermcycle.png"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Controllers": [
+        "Keypad"
+      ]
+    },
+    {
+      "Name": "Claude Clear",
+      "Tooltip": "Wipe the top Claude session's conversation history. Press once to confirm (eyes), press again to run /clear.",
+      "Icon": "resources/action-clear.png",
+      "UUID": "com.claudedeck.deck.plugin.clear",
+      "States": [
+        {
+          "Name": "Claude Clear",
+          "Image": "resources/action-clear.png"
         }
       ],
       "SupportedInMultiActions": false,

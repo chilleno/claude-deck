@@ -46,6 +46,13 @@ try {
   EYES_PNG = 'data:image/png;base64,' + readFileSync(join(__dirname, '../resources/pets/eyes.png')).toString('base64');
 } catch { /* png missing */ }
 
+// idle image for the Claude Clear key — same art the manifest ships as the
+// action icon, so the key looks identical before and after the plugin boots
+let CLEAR_PNG = null;
+try {
+  CLEAR_PNG = 'data:image/png;base64,' + readFileSync(join(__dirname, '../resources/action-clear.png')).toString('base64');
+} catch { /* png missing */ }
+
 const STATE_GIF = {
   working: 'coding',
   compacting: 'coding',
@@ -65,6 +72,7 @@ const HANDLERS = {
   [`${PLUGIN_UUID}.optok`]: optOk,
   [`${PLUGIN_UUID}.screensetup`]: setupPress,
   [`${PLUGIN_UUID}.compact`]: compactPress,
+  [`${PLUGIN_UUID}.clear`]: clearPress,
   [`${PLUGIN_UUID}.sessionswitch`]: switchPress,
 };
 
@@ -517,6 +525,19 @@ function anyCompacting(states) {
   return states.some(s => s.state === 'compacting');
 }
 
+// A pending question / permission prompt owns that session's keyboard: the TUI
+// reads the next newline as "confirm the highlighted choice", so typing a slash
+// command there answers Claude instead of running the command. `asking` and
+// `attention` are also the top two priorities, so displayedSession() targets
+// exactly those sessions — never inject while one is up.
+// askingSession() alone isn't enough: it only matches asks whose option list was
+// captured, and the raw state covers the rest.
+const PROMPT_STATES = new Set(['asking', 'attention']);
+
+function promptPending(states, target) {
+  return !!askingSession(states, PIN.sid) || PROMPT_STATES.has(target.state);
+}
+
 function refreshCompactIcon(inst) {
   try {
     const states = readStates();
@@ -556,6 +577,13 @@ async function compactPress() {
   const states = readStates();
   if (!states.length) { $UD.toast('No Claude session to compact'); return; }
   if (anyCompacting(states)) return; // already running — do nothing
+  const best = displayedSession(states);
+  if (promptPending(states, best)) {
+    COMPACT.confirmUntil = 0;
+    $UD.toast('Answer the prompt first');
+    refreshCompactKeys();
+    return;
+  }
   if (Date.now() >= COMPACT.confirmUntil) {
     // first press: arm confirmation
     COMPACT.confirmUntil = Date.now() + COMPACT_CONFIRM_MS;
@@ -564,7 +592,6 @@ async function compactPress() {
   }
   // second press: fire /compact at the session shown on the big key
   COMPACT.confirmUntil = 0;
-  const best = displayedSession(states);
   const tty = await claudeTtyByCwd(best.cwd);
   if (!tty) { $UD.toast('Session terminal not found'); refreshCompactKeys(); return; }
   const out = await sendTextToTty(tty, '/compact', true);
@@ -572,6 +599,94 @@ async function compactPress() {
   log('sent /compact to', tty);
   $UD.toast(`Compacting ${basename(best.cwd || '') || 'session'}…`);
   refreshCompactKeys(); // bonk appears once the PreCompact hook flips the state
+}
+
+// ---- Claude Clear key ----------------------------------------------------
+// Same two-press confirm as Compact, but sends /clear (wipes the session's
+// conversation history). No busy state exists for /clear — the hook pipeline
+// has no 'clearing' state — so the key shows idle / armed / no-session, plus
+// bonk when the *target* session is compacting (that press is refused).
+// Its own confirm window: sharing COMPACT's would cross-arm the two keys.
+const CLEAR_ACTION = `${PLUGIN_UUID}.clear`;
+const CLEAR_CONFIRM_MS = 8000;
+const CLEAR = { confirmUntil: 0 };
+
+function isClear(context) {
+  return (($UD.decodeContext(context) || {}).uuid || '') === CLEAR_ACTION;
+}
+
+function refreshClearIcon(inst) {
+  try {
+    const states = readStates();
+    let wanted;
+    if (!states.length) wanted = 'png:fail';
+    // target busy — mirrors the guard in clearPress() so the refusal is visible
+    else if (displayedSession(states).state === 'compacting') wanted = 'gif:bonk';
+    else if (Date.now() < CLEAR.confirmUntil) wanted = 'png:eyes';
+    else wanted = 'png:clear';
+    if (wanted === inst.lastIcon) return;
+    const [kind, name] = wanted.split(':');
+    const PNGS = { fail: FAIL_PNG, eyes: EYES_PNG, clear: CLEAR_PNG };
+    if (kind === 'gif' && PET_GIFS[name]) {
+      inst.lastIcon = wanted;
+      $UD.setGifDataIcon(inst.context, PET_GIFS[name]);
+    } else if (kind === 'png' && PNGS[name]) {
+      inst.lastIcon = wanted;
+      $UD.setBaseDataIcon(inst.context, PNGS[name]);
+    }
+  } catch (e) {
+    log('clear icon refresh failed', e?.message);
+  }
+}
+
+function startClearPolling(inst) {
+  stopCyclePolling(inst);
+  refreshClearIcon(inst);
+  inst.timer = setInterval(() => refreshClearIcon(inst), PET_POLL_MS);
+}
+
+function refreshClearKeys() {
+  for (const inst of INSTANCES.values()) {
+    if (isClear(inst.context) && inst.timer) refreshClearIcon(inst);
+  }
+}
+
+async function clearPress() {
+  const states = readStates();
+  if (!states.length) { $UD.toast('No Claude session to clear'); return; }
+  const best = displayedSession(states);
+  // a question / permission prompt is up: the newline would answer it instead
+  // of running /clear (see promptPending). Refuse, and disarm.
+  if (promptPending(states, best)) {
+    CLEAR.confirmUntil = 0;
+    $UD.toast('Answer the prompt first');
+    refreshClearKeys();
+    return;
+  }
+  // The key targets one session, so the busy check is scoped to that session:
+  // a compaction elsewhere must not deaden this key. Disarm + toast so the
+  // refusal is never silent (a swallowed press used to leave the eyes showing).
+  if (best.state === 'compacting') {
+    CLEAR.confirmUntil = 0;
+    $UD.toast('Session is compacting — try again');
+    refreshClearKeys();
+    return;
+  }
+  if (Date.now() >= CLEAR.confirmUntil) {
+    // first press: arm confirmation
+    CLEAR.confirmUntil = Date.now() + CLEAR_CONFIRM_MS;
+    refreshClearKeys();
+    return;
+  }
+  // second press: fire /clear at the session shown on the big key
+  CLEAR.confirmUntil = 0;
+  const tty = await claudeTtyByCwd(best.cwd);
+  if (!tty) { $UD.toast('Session terminal not found'); refreshClearKeys(); return; }
+  const out = await sendTextToTty(tty, '/clear', true);
+  if (out.trim() !== 'ok') { $UD.toast('Terminal session not found'); refreshClearKeys(); return; }
+  log('sent /clear to', tty);
+  $UD.toast(`Clearing ${basename(best.cwd || '') || 'session'}…`);
+  refreshClearKeys();
 }
 
 const SWITCH_ACTION = `${PLUGIN_UUID}.sessionswitch`;
@@ -613,6 +728,7 @@ function ensureInstance(context, settings) {
     if (isOptKey(context)) startOptPolling(inst);
     if (isSetup(context)) startSetupPolling(inst);
     if (isCompact(context)) startCompactPolling(inst);
+    if (isClear(context)) startClearPolling(inst);
     if (isSwitch(context)) startSwitchPolling(inst);
   } else if (settings && Object.keys(settings).length) {
     inst.settings = { ...settings };
@@ -677,6 +793,9 @@ $UD.onSetActive((msg) => {
     else stopCyclePolling(inst);
   } else if (isCompact(msg.context)) {
     if (msg.active) startCompactPolling(inst);
+    else stopCyclePolling(inst);
+  } else if (isClear(msg.context)) {
+    if (msg.active) startClearPolling(inst);
     else stopCyclePolling(inst);
   } else if (isSwitch(msg.context)) {
     if (msg.active) startSwitchPolling(inst);

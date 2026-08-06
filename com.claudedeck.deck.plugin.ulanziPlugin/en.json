@@ -29,6 +29,10 @@
     {
       "Name": "Claude Session Screen",
       "Tooltip": "The big-screen display: session name, status, and the question picker."
+    },
+    {
+      "Name": "Claude Clear",
+      "Tooltip": "Wipe the top Claude session's conversation history. Press once to confirm (eyes), press again to run /clear."
     }
   ],
   "Localization": {}

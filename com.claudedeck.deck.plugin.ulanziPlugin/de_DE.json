@@ -29,6 +29,10 @@
     {
       "Name": "Session-Display",
       "Tooltip": "Großes Display: Session-Name, Status und Fragen-Auswahl."
+    },
+    {
+      "Name": "Claude Clear",
+      "Tooltip": "Löscht den Gesprächsverlauf der obersten Claude-Session. Einmal drücken zum Bestätigen (Augen), erneut drücken für /clear."
     }
   ],
   "Localization": {}

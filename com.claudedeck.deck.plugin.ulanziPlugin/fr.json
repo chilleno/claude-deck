@@ -29,6 +29,10 @@
     {
       "Name": "Écran de session",
       "Tooltip": "Le grand écran : nom de session, état et sélecteur de questions."
+    },
+    {
+      "Name": "Claude Clear",
+      "Tooltip": "Efface l'historique de conversation de la session Claude principale. Appuyez une fois pour confirmer (yeux), une seconde fois pour lancer /clear."
     }
   ],
   "Localization": {}

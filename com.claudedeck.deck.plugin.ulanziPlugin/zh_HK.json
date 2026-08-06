@@ -29,6 +29,10 @@
     {
       "Name": "工作階段屏幕",
       "Tooltip": "大屏幕顯示:工作階段名、狀態同問題選擇器。"
+    },
+    {
+      "Name": "Claude 清空",
+      "Tooltip": "清空最上層 Claude 工作階段嘅對話記錄。按一次確認（眼睛），再按一次執行 /clear。"
     }
   ],
   "Localization": {}

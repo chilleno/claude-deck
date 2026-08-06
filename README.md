@@ -12,7 +12,7 @@ Ulanzi Studio scans `~/Library/Application Support/Ulanzi/UlanziDeck/Plugins/`, 
 
 Claude Code state comes from **hooks**: `hooks/claude-hook.py` runs on every Claude event → one JSON state file per session in `~/Library/Application Support/Ulanzi/UlanziDeck/claude-state/` → plugin polls (pet/opt keys 1 s, big key 3 s). Hooks are wired into every `~/.claude*` profile by `sync-hooks.sh` (runs on install) **or** self-served from the plugin's settings panel ("Enable Claude tracking" button — marketplace installs need no scripts).
 
-## Actions (7)
+## Actions (8)
 
 | Action | What it does |
 |---|---|
@@ -22,6 +22,7 @@ Claude Code state comes from **hooks**: `hooks/claude-hook.py` runs on every Cla
 | **Claude Screen Setup** | One-press toggle of the big screen: Claude status ↔ built-in widget. Studio restarts itself (~15 s). Icons: approved = showing, jam = hidden, loading = applying. Panel hosts the hook-setup button. |
 | **Claude Session Switch** | Pins and cycles which tracked session the big key shows (one way, wraps around). With several sessions asking at once, the pin also chooses which question shows/answers first. |
 | **Claude Compact** | Compacts the top session's context from the deck. Two-press confirm: yells image idle → press once → eyes image for 8 s → press again → `/compact` typed into that session's terminal. Bonk GIF while the session is compacting. |
+| **Claude Clear** | Wipes the top session's conversation history. Two-press confirm: clear image idle → press once → eyes image for 8 s → press again → `/clear` typed into that session's terminal. Refused (with a toast) while a question is pending, and while the target session is compacting — bonk GIF then. |
 | **Claude Session Screen** | The big-key display: top-priority Claude session — project name, status badge, `model · effort · branch` row and a colored context bar (or a compaction progress bar) — plus the question picker when asking and a confirm flash after OK. Shows a "no session" placeholder when nothing is tracked (never the stale terminal name). Placed on the big key by Screen Setup. Panel hosts the terminal selector. |
 
 All small keys show the fail image when no claude session is tracked.
@@ -45,6 +46,16 @@ All small keys show the fail image when no claude session is tracked.
 | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/yells.png" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/eyes.png" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/bonk.gif" width="72"> |
 |:---:|:---:|:---:|
 | ready | press again to confirm | compacting… |
+
+**Claude Clear** — two-press confirm (same eyes image as Compact while armed):
+
+| <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/action-clear.png" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/eyes.png" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/bonk.gif" width="72"> |
+|:---:|:---:|:---:|
+| ready | press again to confirm | target session compacting — press refused |
+
+Both Compact and Clear refuse a press while a question is pending (the newline
+would confirm the highlighted option instead of running the command) and toast
+`Answer the question first`.
 
 **Claude Screen Setup** — big-screen toggle:
 

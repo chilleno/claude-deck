@@ -4,7 +4,9 @@
 
 ## What this is
 
-One plugin (`com.claudedeck.deck.plugin.ulanziPlugin/`, UUID `com.claudedeck.deck.plugin`, name "Claude Deck") with 6 actions: Claude Pet (status GIFs, press = jump to session), Option Next + Option OK (answer AskUserQuestion from the deck), Claude Screen Setup (one-press big-screen toggle + hook self-setup panel), Claude Compact (two-press confirm → `/compact` into top session's terminal; bonk GIF while compacting), Claude Session Screen (big-key display; also hosts the terminal selector).
+One plugin (`com.claudedeck.deck.plugin.ulanziPlugin/`, UUID `com.claudedeck.deck.plugin`, name "Claude Deck") with 8 actions: Claude Pet (status GIFs, press = jump to session), Option Next + Option OK (answer AskUserQuestion from the deck), Claude Screen Setup (one-press big-screen toggle + hook self-setup panel), Claude Session Switch (pins/cycles which tracked session the big key shows — also picks which question answers first), Claude Compact (two-press confirm → `/compact` into top session's terminal; bonk GIF while compacting), Claude Clear (two-press confirm → `/clear`; its **own** confirm window — sharing Compact's would cross-arm both keys), Claude Session Screen (big-key display, action UUID `itermcycle`; also hosts the terminal selector).
+
+Compact/Clear press guards (both keys): refuse + toast while a question is pending (`askingSession`) — the newline would answer the picker instead of running the command; Clear also refuses when its *target* session is compacting (scoped, not global) and shows bonk while so.
 
 ## Deploy loop (every change)
 

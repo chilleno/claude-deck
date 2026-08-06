@@ -29,6 +29,10 @@
     {
       "Name": "Ecrã de Sessão",
       "Tooltip": "O ecrã grande: nome da sessão, estado e seletor de perguntas."
+    },
+    {
+      "Name": "Claude Clear",
+      "Tooltip": "Apaga o histórico de conversa da sessão Claude principal. Prima uma vez para confirmar (olhos) e novamente para executar /clear."
     }
   ],
   "Localization": {}
