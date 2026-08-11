@@ -2,11 +2,13 @@ import UlanziApi from './plugin-common-node/index.js';
 import {
   openApp,
   itermCycle,
-  focusItermByCwd,
-  claudeTtyByCwd,
+  focusClaudeSession,
+  claudeTtyForSession,
   sendTextToTty,
+  canSendKeys,
+  sendKeysToTty,
 } from './actions.js';
-import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, appendFileSync } from 'fs';
 import { spawn } from 'child_process';
 import { homedir } from 'os';
 import { fileURLToPath } from 'url';
@@ -113,14 +115,49 @@ async function switchPress() {
 // ---- AskUserQuestion option picker --------------------------------------
 // OPT.key identifies the ask (session + first question) so state resets when
 // a new ask appears. qIdx walks through multi-question asks.
-const OPT = { key: null, index: 0, qIdx: 0, confirmUntil: 0, answeredKey: null };
+//
+// tuiIndex mirrors the TUI picker's highlighted row: Next moves the terminal
+// highlight along with the deck (arrow-key injection, iTerm2 only). The
+// picker also has an "Other" free-text row below the options — navigation
+// never crosses it: forward = single Downs, deck wrap-around = a burst of
+// Ups back to the top. mirrorDead latches per ask on any failed send; the
+// deck keeps cycling locally and OK's absolute digit still selects right.
+const OPT = { key: null, index: 0, qIdx: 0, confirmUntil: 0, answeredKey: null,
+              tuiIndex: 0, mirrorBusy: false, mirrorDead: false };
 
 function currentAsk() {
   const s = askingSession(readStates(), PIN.sid);
   if (!s) return null;
   const key = s.sid + '::' + s.ask.question;
-  if (OPT.key !== key) { OPT.key = key; OPT.index = 0; OPT.qIdx = 0; }
+  if (OPT.key !== key) {
+    OPT.key = key; OPT.index = 0; OPT.qIdx = 0;
+    OPT.tuiIndex = 0; OPT.mirrorBusy = false; OPT.mirrorDead = false;
+  }
   return s;
+}
+
+// Push the TUI highlight toward OPT.index. Serialized: one flusher runs at a
+// time; it re-checks the target after every send, so mashed Next presses
+// update the deck instantly and the terminal catches up in order.
+async function mirrorPicker(s) {
+  if (!canSendKeys() || OPT.mirrorDead || OPT.mirrorBusy) return;
+  OPT.mirrorBusy = true;
+  const key = OPT.key, qIdx = OPT.qIdx;
+  try {
+    while (OPT.key === key && OPT.qIdx === qIdx && OPT.tuiIndex !== OPT.index) {
+      const tty = await claudeTtyForSession(s);
+      if (!tty) { OPT.mirrorDead = true; return; }
+      const delta = OPT.index - OPT.tuiIndex;
+      const out = await sendKeysToTty(tty, delta > 0 ? 'down' : 'up', Math.abs(delta));
+      if (out !== 'ok') { OPT.mirrorDead = true; return; }
+      OPT.tuiIndex += delta;
+    }
+  } catch (e) {
+    log('mirror failed', e?.message);
+    OPT.mirrorDead = true;
+  } finally {
+    OPT.mirrorBusy = false;
+  }
 }
 
 // old state files carry a single flat question; new ones a questions[] list
@@ -139,24 +176,25 @@ async function optNext() {
   const s = currentAsk();
   if (!s) { $UD.toast('No Claude question active'); return; }
   const qs = askQuestions(s.ask);
-  if (askNeedsTerminal(qs)) { focusItermByCwd(s.cwd); return; }
+  if (askNeedsTerminal(qs)) { focusClaudeSession(s); return; }
   if (OPT.qIdx >= qs.length) return; // submit screen — nothing to cycle
   OPT.index = (OPT.index + 1) % qs[OPT.qIdx].options.length;
   refreshBigKeys();
+  mirrorPicker(s); // fire-and-forget: terminal highlight follows the deck
 }
 
 async function optOk() {
   const s = currentAsk();
   if (!s) { $UD.toast('No Claude question active'); return; }
   const qs = askQuestions(s.ask);
-  if (askNeedsTerminal(qs)) { focusItermByCwd(s.cwd); return; }
-  const tty = await claudeTtyByCwd(s.cwd);
-  if (!tty) { $UD.toast('Session terminal not found'); return; }
+  if (askNeedsTerminal(qs)) { focusClaudeSession(s); return; }
+  const tty = await claudeTtyForSession(s);
+  if (!tty) { log('optOk: no tty for', s.sid, s.tty, s.cwd); $UD.toast('Session terminal not found'); return; }
 
   if (OPT.qIdx >= qs.length) {
     // every question answered — Enter presses the TUI's Submit tab
     const out = await sendTextToTty(tty, '', true);
-    if (out.trim() !== 'ok') { $UD.toast('Terminal session not found'); return; }
+    if (out.trim() !== 'ok') { log('optOk: submit write failed:', out.trim()); $UD.toast('Terminal session not found'); return; }
     log('submitted answers to', tty);
     finishAnswer('Answers submitted');
     return;
@@ -165,7 +203,7 @@ async function optOk() {
   const q = qs[OPT.qIdx];
   const digit = String(OPT.index + 1);
   const out = await sendTextToTty(tty, digit, false);
-  if (out.trim() !== 'ok') { $UD.toast('Terminal session not found'); return; }
+  if (out.trim() !== 'ok') { log('optOk: digit write failed:', out.trim()); $UD.toast('Terminal session not found'); return; }
   log('answered option', digit, 'on question', OPT.qIdx + 1, 'to', tty);
   advanceQuestion(qs, q.options[OPT.index] || '');
 }
@@ -175,6 +213,7 @@ async function optOk() {
 function advanceQuestion(qs, label) {
   OPT.qIdx += 1;
   OPT.index = 0;
+  OPT.tuiIndex = 0; // the TUI's next question starts highlighted at the top
   if (OPT.qIdx >= qs.length && qs.length === 1) {
     finishAnswer(label);
   } else {
@@ -206,7 +245,7 @@ function refreshBigKeys() {
 async function petPress(settings) {
   const agg = aggregateState(readStates(), (settings.dir || '').trim());
   if ((agg.state === 'asking' || agg.state === 'attention') && agg.cwd) {
-    return focusItermByCwd(agg.cwd);
+    return focusClaudeSession(agg);
   }
   return openApp({ app: 'iTerm' });
 }
@@ -219,8 +258,18 @@ const PET_POLL_MS = 1000;
 const $UD = new UlanziApi();
 const INSTANCES = new Map();
 
+// stdout vanishes inside Studio; with the .debug marker present the same
+// lines also land in claude-state/.plugin.log (dotfiles are skipped by the
+// session reader). Same on/off switch as the hook's events.log.
+const DEBUG_DIR = join(homedir(), 'Library/Application Support/Ulanzi/UlanziDeck/claude-state');
 function log(...args) {
   console.log('[claude-deck]', ...args);
+  try {
+    if (existsSync(join(DEBUG_DIR, '.debug'))) {
+      appendFileSync(join(DEBUG_DIR, '.plugin.log'),
+        Math.floor(Date.now() / 1000) + ' ' + args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' ') + '\n');
+    }
+  } catch { /* debug only */ }
 }
 
 function isCycle(context) {
@@ -592,7 +641,7 @@ async function compactPress() {
   }
   // second press: fire /compact at the session shown on the big key
   COMPACT.confirmUntil = 0;
-  const tty = await claudeTtyByCwd(best.cwd);
+  const tty = await claudeTtyForSession(best);
   if (!tty) { $UD.toast('Session terminal not found'); refreshCompactKeys(); return; }
   const out = await sendTextToTty(tty, '/compact', true);
   if (out.trim() !== 'ok') { $UD.toast('Terminal session not found'); refreshCompactKeys(); return; }
@@ -680,7 +729,7 @@ async function clearPress() {
   }
   // second press: fire /clear at the session shown on the big key
   CLEAR.confirmUntil = 0;
-  const tty = await claudeTtyByCwd(best.cwd);
+  const tty = await claudeTtyForSession(best);
   if (!tty) { $UD.toast('Session terminal not found'); refreshClearKeys(); return; }
   const out = await sendTextToTty(tty, '/clear', true);
   if (out.trim() !== 'ok') { $UD.toast('Terminal session not found'); refreshClearKeys(); return; }

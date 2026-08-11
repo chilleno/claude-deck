@@ -88,6 +88,50 @@ def session_info(data):
     return info or None
 
 
+def own_tty():
+    """Controlling terminal of this hook = the claude process's terminal.
+
+    Recorded so the plugin can target the session by tty directly — the cwd
+    in hook events follows every `cd` the session runs, while the claude
+    process cwd stays at the launch dir, so cwd matching breaks whenever a
+    session works inside a subdirectory (deck keys went dead intermittently).
+    """
+    for fd in (0, 1, 2):
+        try:
+            return os.ttyname(fd)
+        except OSError:
+            pass
+    try:
+        fd = os.open("/dev/tty", os.O_RDONLY)
+        try:
+            name = os.ttyname(fd)
+        finally:
+            os.close(fd)
+        if name and name != "/dev/tty":
+            return name
+    except OSError:
+        pass
+    # hooks run detached from the terminal (fds are pipes, no controlling
+    # tty), but the claude TUI a few ppid hops up still holds it — walk up
+    try:
+        import subprocess
+        pid = os.getpid()
+        for _ in range(8):
+            out = subprocess.run(["ps", "-o", "tty=", "-o", "ppid=", "-p", str(pid)],
+                                 capture_output=True, text=True, timeout=3).stdout.split()
+            if len(out) < 2:
+                break
+            tty, ppid = out[0], out[1]
+            if tty != "??":
+                return "/dev/" + tty
+            pid = int(ppid)
+            if pid <= 1:
+                break
+    except Exception:
+        pass
+    return ""
+
+
 def main():
     try:
         data = json.load(sys.stdin)
@@ -170,9 +214,17 @@ def main():
                 ask = None
 
     os.makedirs(STATE_DIR, exist_ok=True)
+    tty = own_tty()
+    if not tty:
+        # headless event or detection failure — keep the last known tty
+        try:
+            tty = json.load(open(path)).get("tty") or ""
+        except (OSError, ValueError):
+            tty = ""
     payload = {
         "state": state,
         "cwd": data.get("cwd") or "",
+        "tty": tty,
         "tool": data.get("tool_name") or "",
         "ts": time.time(),
     }

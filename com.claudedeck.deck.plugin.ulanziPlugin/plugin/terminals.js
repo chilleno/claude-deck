@@ -100,6 +100,35 @@ const iterm2 = {
     ].join('\n');
   },
 
+  // Send a single navigation keypress to the session. One keypress per
+  // write — Ink drops everything after the first key when multiple
+  // keypresses share a stdin write. Terminal.app has no equivalent:
+  // `do script` always appends a newline, which breaks escape sequences.
+  sendKeyByTtyScript(tty, key) {
+    const seq = {
+      'down': '((character id 27) & "[B")',
+      'up': '((character id 27) & "[A")',
+      'tab': '(character id 9)',
+      'shift-tab': '((character id 27) & "[Z")',
+    }[key];
+    if (!seq) return null;
+    return [
+      'tell application "iTerm2"',
+      '  repeat with w in windows',
+      '    repeat with t in tabs of w',
+      '      repeat with s in sessions of t',
+      `        if tty of s is ${asQuote(tty)} then`,
+      `          tell s to write text ${seq} newline NO`,
+      '          return "ok"',
+      '        end if',
+      '      end repeat',
+      '    end repeat',
+      '  end repeat',
+      '  return "notfound"',
+      'end tell',
+    ].join('\n');
+  },
+
 };
 
 // ---- Terminal.app -------------------------------------------------------

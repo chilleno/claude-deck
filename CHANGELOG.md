@@ -5,6 +5,15 @@ Rule: every user-visible change bumps the version here **and** in the manifest
 (patch = fix/tweak, minor = new action/feature, major = breaking/UUID-level).
 Store zips are built from this version.
 
+## 2.2.0 — 2026-08-11
+
+- **Option Next now mirrors the highlight in the terminal** — pressing Next moves the TUI picker's highlighted row along with the deck screen (arrow-key injection via AppleScript, iTerm2 only), so the picker is usable without the big key. Probed empirically: Down/Up move the highlight, Enter selects; the picker has an "Other" free-text row below the options, so navigation never crosses it — forward = single Downs, deck wrap-around = a burst of Ups back to the top. Serialized flusher: deck updates instantly, terminal catches up in order; any failed send latches mirroring off for that ask and the deck falls back to local-only cycling (OK's absolute digit always selects the right option either way). New `sendKeyByTtyScript` (iTerm2 adapter, down/up/tab/shift-tab), `canSendKeys`/`sendKeysToTty` (actions)
+
+## 2.1.1 — 2026-08-11
+
+- **Fix: deck keys went dead when a session worked inside a subdirectory.** Hook events record the session's *live* shell cwd (follows every `cd`), but the plugin matched it by exact equality against the claude *process* cwd, which stays frozen at the launch dir — mismatch → tty lookup failed → OK/Next/Compact/Clear presses did nothing (reproduced on hardware). The hook now records its controlling tty (`own_tty()`: fd ttyname → `/dev/tty` → `ps -o tty=`; keeps the last known tty on detection failure), and the plugin targets sessions by that tty first — trusted only while a live claude still sits on it (tty names get reused) — with the old cwd match as fallback for old state files (`claudeTtyForSession`, `focusClaudeSession` in `plugin/actions.js`)
+- Plugin debug logging: with the `.debug` marker present (same switch as the hook's `events.log`), plugin `log()` lines also append to `claude-state/.plugin.log` — Studio swallows plugin stdout, this was previously invisible. OK-press failure paths (no tty, write failed) now log their reason
+
 ## 2.1.0 — 2026-08-06
 
 - **New action: Claude Clear** — two-press confirm (8 s window, eyes image while armed), types `/clear` into the top session's terminal to wipe its conversation history; own confirm window so it never cross-arms with Claude Compact
