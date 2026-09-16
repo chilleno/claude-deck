@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude Deck — ユーザーガイド</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 32px 20px 64px;
+    background: #1e1f22; color: #e8e8ec;
+    font: 15px/1.6 -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans", "Noto Sans KR", Roboto, sans-serif;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: .3px; }
+  h1 .mark { color: #d77757; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 1.2px; opacity: .65;
+       margin: 34px 0 12px; font-weight: 600; }
+  p { margin: 0 0 12px; }
+  .lede { font-size: 16px; }
+  .needs { background: #26272b; border-left: 3px solid #d77757; padding: 12px 14px; border-radius: 0 6px 6px 0; }
+  .step { margin: 0 0 18px; }
+  .step h3 { font-size: 15px; margin: 0 0 4px; }
+  .step p { margin: 0; opacity: .85; }
+  table { border-collapse: collapse; width: 100%; }
+  td { padding: 7px 10px 7px 0; border-bottom: 1px solid #2c2d32; vertical-align: top; }
+  td.k { white-space: nowrap; font-weight: 600; width: 1%; }
+  td.d { opacity: .8; font-size: 14px; }
+  .icons li { margin-bottom: 6px; }
+  .q { font-weight: 600; margin: 0 0 2px; }
+  .a { opacity: .8; margin: 0 0 14px; }
+  code { background: #2c2d32; border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+  a { color: #7ab8f5; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #2c2d32; opacity: .6; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1><span class="mark">Claude</span> Deck</h1>
+  <p class="lede">Claude Deck は、Claude Code の各セッションの状態をデッキ上に表示します。どれが作業中か、どれが質問しているか、コンテキストの残りはどれくらいか。さらに、キーボードに触れずに質問へ回答したり /compact や /clear を実行できます。</p>
+  <p class="needs">必要なもの：macOS、Ulanzi Studio、そして Anthropic の Claude Code CLI。Claude Deck は Claude Code の補助ツールで、単体では表示するものがありません。 <a href="https://docs.claude.com/en/docs/claude-code/setup">https://docs.claude.com/en/docs/claude-code/setup</a></p>
+
+  <h2>セットアップ</h2>
+  <div class="step"><h3>1. Claude Code をインストールする</h3><p>Claude Code は Anthropic が提供する Claude 用のコマンドラインツールです。公式のインストール手順に従い、ターミナルで一度 <code>claude</code> を実行して設定ファイルを作成してください。</p></div>
+  <div class="step"><h3>2. Claude トラッキングを有効にする</h3><p>Claude Deck のアクションをキーにドラッグし、設定パネルを開きます。セットアップ一覧に不足している項目が表示されるので、<b>Claude トラッキングを有効化</b> を押してください。Claude Code の設定にフックが追加され（事前にバックアップを保存します）、デッキがセッション状態を取得できるようになります。すでに実行中の claude セッションは再起動してください。</p></div>
+  <div class="step"><h3>3. ターミナル制御を許可する</h3><p>パネルでターミナル（iTerm2 または Terminal.app）を選び、<b>ターミナルアクセスを確認</b> を押して macOS の確認に許可を与えます。ここで答えておくと、後からキーが無反応に見える問題を防げます。以前に拒否した場合：システム設定 → プライバシーとセキュリティ → オートメーション → Ulanzi Studio。</p></div>
+  <div class="step"><h3>4. 任意：ビッグスクリーン</h3><p><b>スクリーン設定</b> キーを一度押すと、Claude のセッション表示がビッグキーに配置されます。適用のため Ulanzi Studio が自動的に再起動します（約15秒）。もう一度押すと内蔵ウィジェットに戻ります。</p></div>
+
+  <h2>各キーの機能</h2>
+  <table><tr><td class="k">Claude ペット</td><td class="d">Claude Code のライブ状態：コーディング中・質問中・待機中。押すと対象セッションへ移動。 アイコンがグレー = Claude Code のセッションが未検出です。</td></tr><tr><td class="k">次のオプション</td><td class="d">Claude の質問オプションを切り替え（ビッグキーに表示）。 アイコンがグレー = Claude Code のセッションが未検出です。</td></tr><tr><td class="k">オプション確定</td><td class="d">ビッグキーに表示中のオプションで Claude に回答。 アイコンがグレー = Claude Code のセッションが未検出です。</td></tr><tr><td class="k">スクリーン設定</td><td class="d">ビッグスクリーンの Claude 表示を切り替え。押すだけで自動（Studio が自動再起動）。</td></tr><tr><td class="k">セッション切替</td><td class="d">ビッグスクリーンに表示するClaudeセッションを切り替えます（一方向、最後で最初に戻る）。 アイコンがグレー = Claude Code のセッションが未検出です。</td></tr><tr><td class="k">Claude コンパクト</td><td class="d">最上位の Claude セッションのコンテキストを圧縮します。1回押して確認（目）、もう1回押すと /compact を実行。 アイコンがグレー = Claude Code のセッションが未検出です。</td></tr><tr><td class="k">セッション画面</td><td class="d">ビッグスクリーン表示：セッション名、状態、質問ピッカー。</td></tr><tr><td class="k">Claude クリア</td><td class="d">最上位の Claude セッションの会話履歴を消去します。1回押して確認（目）、もう1回押すと /clear を実行。 アイコンがグレー = Claude Code のセッションが未検出です。</td></tr></table>
+
+  <h2>アイコンの意味</h2>
+  <ul class="icons"><li><b>カラー</b> — Claude Code のセッションを追跡中です。</li><li><b>白黒</b> — 現在セッションが実行されていません。セッションを開始するとキーが動き出します。</li><li><b>白黒＋オレンジの点</b> — Claude Deck のセットアップが未完了です。いずれかのキーの設定パネルを開き、一覧の項目を進めてください。</li></ul>
+
+  <h2>うまく動かないとき</h2>
+  <p class="q">claude を実行中なのにキーがグレーのまま</p><p class="a">フックはセッション開始時に読み込まれるため、トラッキングを有効にした時点ですでに開いていたセッションは何も送信しません。再起動してください。それでも直らない場合はパネルのセットアップ一覧を確認してください。</p>
+  <p class="q">キーを押しても何も起こらない</p><p class="a">多くの場合、macOS がターミナル制御をブロックしています。パネルで <b>ターミナルアクセスを確認</b> を押し、ブロックと表示されたら システム設定 → プライバシーとセキュリティ → オートメーション で Ulanzi Studio を許可してください。</p>
+  <p class="q">質問がビッグキーに表示されない</p><p class="a">複数選択の質問はデッキから回答できません。その場合はキーがその旨を表示し、ターミナルへ移動します。それ以外の質問は1〜2秒でビッグキーに表示されます。</p>
+  <p class="q">ビッグスクリーンが内蔵ウィジェットに戻ってしまった</p><p class="a">ページを編集すると Ulanzi Studio がそのスロットを書き換えます。もう一度スクリーン設定キーを押し、Studio の再起動を待ってください。</p>
+
+  <footer>Claude Deck はオープンソースです。問題の報告とソースコードはこちら： <a href="https://github.com/chilleno/claude-deck">https://github.com/chilleno/claude-deck</a> · v2.4.0</footer>
+</main>
+</body>
+</html>

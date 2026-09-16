@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude Deck — Guia do utilizador</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 32px 20px 64px;
+    background: #1e1f22; color: #e8e8ec;
+    font: 15px/1.6 -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans", "Noto Sans KR", Roboto, sans-serif;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: .3px; }
+  h1 .mark { color: #d77757; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 1.2px; opacity: .65;
+       margin: 34px 0 12px; font-weight: 600; }
+  p { margin: 0 0 12px; }
+  .lede { font-size: 16px; }
+  .needs { background: #26272b; border-left: 3px solid #d77757; padding: 12px 14px; border-radius: 0 6px 6px 0; }
+  .step { margin: 0 0 18px; }
+  .step h3 { font-size: 15px; margin: 0 0 4px; }
+  .step p { margin: 0; opacity: .85; }
+  table { border-collapse: collapse; width: 100%; }
+  td { padding: 7px 10px 7px 0; border-bottom: 1px solid #2c2d32; vertical-align: top; }
+  td.k { white-space: nowrap; font-weight: 600; width: 1%; }
+  td.d { opacity: .8; font-size: 14px; }
+  .icons li { margin-bottom: 6px; }
+  .q { font-weight: 600; margin: 0 0 2px; }
+  .a { opacity: .8; margin: 0 0 14px; }
+  code { background: #2c2d32; border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+  a { color: #7ab8f5; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #2c2d32; opacity: .6; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1><span class="mark">Claude</span> Deck</h1>
+  <p class="lede">O Claude Deck mostra no deck o que as suas sessões do Claude Code estão a fazer: qual está a trabalhar, qual lhe está a perguntar algo e quanto contexto resta. Também responde a perguntas e executa /compact ou /clear sem tocar no teclado.</p>
+  <p class="needs">Precisa de: macOS, Ulanzi Studio e o CLI Claude Code da Anthropic. O Claude Deck acompanha o Claude Code — sozinho não tem nada para mostrar. <a href="https://docs.claude.com/en/docs/claude-code/setup">https://docs.claude.com/en/docs/claude-code/setup</a></p>
+
+  <h2>Configuração</h2>
+  <div class="step"><h3>1. Instale o Claude Code</h3><p>O Claude Code é a ferramenta de linha de comandos da Anthropic para o Claude. Siga as instruções oficiais de instalação e execute <code>claude</code> uma vez no terminal para que crie as definições.</p></div>
+  <div class="step"><h3>2. Ative a monitorização do Claude</h3><p>Arraste qualquer ação do Claude Deck para uma tecla e abra o painel de definições. A lista de configuração mostra o que falta; prima <b>Ativar monitorização do Claude</b>. Isto adiciona os hooks às definições do Claude Code (é guardada primeiro uma cópia de segurança) para o deck ver o estado das sessões. Reinicie as sessões do claude já abertas.</p></div>
+  <div class="step"><h3>3. Autorize o controlo do terminal</h3><p>Escolha o seu terminal (iTerm2 ou Terminal.app) no painel, prima <b>Verificar acesso ao terminal</b> e aceite o pedido do macOS. Responder agora evita uma tecla que mais tarde parece não fazer nada. Se recusou antes: Definições do Sistema → Privacidade e Segurança → Automatização → Ulanzi Studio.</p></div>
+  <div class="step"><h3>4. Opcional: o ecrã grande</h3><p>Prima uma vez a tecla <b>Configurar Ecrã</b> para colocar o ecrã de sessão do Claude na tecla grande. O Ulanzi Studio reinicia sozinho para aplicar (cerca de 15 segundos). Prima novamente para devolver a tecla grande ao widget incorporado.</p></div>
+
+  <h2>O que faz cada tecla</h2>
+  <table><tr><td class="k">Mascote Claude</td><td class="d">Estado ao vivo do Claude Code: a programar, a perguntar ou parado. Prima para ir à sessão que precisa de si. Ícone cinzento = nenhuma sessão do Claude Code detetada.</td></tr><tr><td class="k">Próxima Opção</td><td class="d">Percorra as opções que o Claude está a perguntar (mostradas na tecla grande). Ícone cinzento = nenhuma sessão do Claude Code detetada.</td></tr><tr><td class="k">Confirmar Opção</td><td class="d">Responda ao Claude com a opção mostrada na tecla grande. Ícone cinzento = nenhuma sessão do Claude Code detetada.</td></tr><tr><td class="k">Configurar Ecrã</td><td class="d">Alterne o estado do Claude no ecrã grande. Premir = automático (o Studio reinicia sozinho).</td></tr><tr><td class="k">Mudar Sessão</td><td class="d">Alterna qual sessão do Claude o ecrã grande mostra (um sentido, volta ao início). Ícone cinzento = nenhuma sessão do Claude Code detetada.</td></tr><tr><td class="k">Claude Compact</td><td class="d">Compacta o contexto da sessão Claude principal. Prima uma vez para confirmar (olhos) e novamente para executar /compact. Ícone cinzento = nenhuma sessão do Claude Code detetada.</td></tr><tr><td class="k">Ecrã de Sessão</td><td class="d">O ecrã grande: nome da sessão, estado e seletor de perguntas.</td></tr><tr><td class="k">Claude Clear</td><td class="d">Apaga o histórico de conversa da sessão Claude principal. Prima uma vez para confirmar (olhos) e novamente para executar /clear. Ícone cinzento = nenhuma sessão do Claude Code detetada.</td></tr></table>
+
+  <h2>O que significam os ícones</h2>
+  <ul class="icons"><li><b>A cores</b> — há uma sessão do Claude Code a ser monitorizada.</li><li><b>A preto e branco</b> — não há nenhuma sessão ativa. Inicie uma e as teclas voltam à vida.</li><li><b>A preto e branco com um ponto âmbar</b> — o Claude Deck ainda precisa de configuração — abra o painel de qualquer tecla e percorra a lista.</li></ul>
+
+  <h2>Se algo não funcionar</h2>
+  <p class="q">As teclas continuam cinzentas apesar de o claude estar a correr</p><p class="a">Os hooks são lidos no início da sessão, por isso as sessões já abertas quando ativou a monitorização não reportam nada. Reinicie-as. Se continuar, abra o painel e veja a lista de configuração.</p>
+  <p class="q">Primo uma tecla e não acontece nada</p><p class="a">Normalmente é o macOS a bloquear o controlo do terminal. Prima <b>Verificar acesso ao terminal</b>; se indicar bloqueado, autorize o Ulanzi Studio em Definições do Sistema → Privacidade e Segurança → Automatização.</p>
+  <p class="q">As perguntas não aparecem na tecla grande</p><p class="a">As perguntas de seleção múltipla não podem ser respondidas pelo deck — a tecla avisa e leva-o ao terminal. Tudo o resto aparece na tecla grande em um ou dois segundos.</p>
+  <p class="q">O ecrã grande voltou ao widget incorporado</p><p class="a">O Ulanzi Studio reescreve esse espaço quando edita a página. Prima outra vez Configurar Ecrã e deixe o Studio reiniciar.</p>
+
+  <footer>O Claude Deck é open source — problemas e código em <a href="https://github.com/chilleno/claude-deck">https://github.com/chilleno/claude-deck</a> · v2.4.0</footer>
+</main>
+</body>
+</html>

@@ -221,4 +221,23 @@ export function adapter() {
   return ADAPTERS[getTerminalChoice()];
 }
 
+// Does macOS let us drive the chosen terminal? Every press that types into a
+// session goes through AppleScript, and the first attempt raises the system
+// Automation prompt — a deck key that silently does nothing is the worst way
+// to discover that, so the setup panel can ask on purpose instead.
+// Returns 'ok' | 'denied' | 'notrunning' | 'error: ...'
+export async function checkTerminalAccess() {
+  const a = adapter();
+  if (!a.installed()) return 'missing';
+  try {
+    await osascript(`tell application "System Events" to (name of processes) contains "${a.processName}"`);
+  } catch (e) {
+    const msg = String(e?.message || '');
+    // -1743 = "Not authorized to send Apple events"
+    if (msg.includes('-1743') || msg.toLowerCase().includes('not authorized')) return 'denied';
+    return 'error: ' + msg.split('\n')[0].slice(0, 120);
+  }
+  return 'ok';
+}
+
 export { osascript, asQuote, run };

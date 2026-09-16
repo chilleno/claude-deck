@@ -87,3 +87,61 @@
   font-size: 11px;
   line-height: 1.45;
 }
+
+/* setup checklist */
+.srow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .05);
+}
+
+.sdot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #6a6a74;
+}
+
+.sdot.ok { background: #3ecf6b; }
+.sdot.warn { background: #e8a33d; }
+.sdot.bad { background: #e06c5a; }
+
+.stext {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.stext strong { font-weight: 600; }
+
+.sdetail {
+  opacity: .6;
+  font-size: 11px;
+  word-break: break-word;
+}
+
+.shint {
+  margin-top: 10px;
+  opacity: .75;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* secondary button: same sizing rules as the primary one */
+.panel button.pi-button.ghost {
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, .25);
+}

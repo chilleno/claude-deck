@@ -17,8 +17,13 @@
         <label for="terminal" data-localize="terminal_label">Terminal</label>
         <select id="terminal"></select>
         <div class="muted" data-localize="terminal_help">Global choice — used by all Claude Deck keys.</div>
-        <div id="hook-status" class="muted" style="margin-top:10px">Checking…</div>
-        <button type="button" id="hook-install" class="pi-button primary" data-localize="tracking_button">Enable Claude tracking</button>
+        <h4 style="margin-top:14px" data-localize="setup_title">Setup</h4>
+        <div id="setup-rows"></div>
+        <div class="actions">
+          <button type="button" id="hook-install" class="pi-button primary" data-localize="tracking_button">Enable Claude tracking</button>
+          <button type="button" id="terminal-check" class="pi-button ghost" data-localize="btn_check_terminal">Check terminal access</button>
+          <button type="button" id="guide-open" class="pi-button ghost" data-localize="btn_guide">User Guide</button>
+        </div>
         <div class="legend" data-localize="grey_legend">Black-and-white keys mean no Claude Code session is being tracked. The keys return to colour as soon as a session is detected.</div>
       </div>
     </form>
@@ -31,6 +36,6 @@
   <script>window.PI_FIELDS = [{"id": "dir", "default": ""}];</script>
   <script src="./pi-common.js"></script>
   <script src="./pi-terminal.js"></script>
-  <script src="./pi-hooks.js"></script>
+  <script src="./pi-setup.js"></script>
 </body>
 </html>

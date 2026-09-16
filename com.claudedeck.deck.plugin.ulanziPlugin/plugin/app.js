@@ -13,8 +13,8 @@ import { spawn } from 'child_process';
 import { homedir } from 'os';
 import { fileURLToPath } from 'url';
 import { dirname, join, basename } from 'path';
-import { renderSession, renderOptions, renderConfirm, renderNoSession, renderSubmit, renderCheckTerminal } from './renderer.js';
-import { detectTerminals, getTerminalChoice, setTerminalChoice } from './terminals.js';
+import { renderSession, renderOptions, renderConfirm, renderNoSession, renderSetupNeeded, renderSubmit, renderCheckTerminal } from './renderer.js';
+import { detectTerminals, getTerminalChoice, setTerminalChoice, checkTerminalAccess } from './terminals.js';
 import { hookStatus, installHooks } from './hooks-setup.js';
 import { readStates, aggregateState, askingSession } from './claude-state.js';
 
@@ -73,15 +73,68 @@ for (const [key, file] of Object.entries({
   } catch { /* png missing — FAIL_PNG stands in */ }
 }
 
-// Greyscale icon for an action, falling back to the shared placeholder if the
-// offline artwork is missing from the install.
+const SETUP_PNG = {};
+for (const [key, file] of Object.entries({
+  claudepet: 'action-claudepet.png',
+  optnext: 'action-optnext.png',
+  optok: 'action-optok.png',
+  sessionswitch: 'action-sessionswitch.png',
+  compact: 'action-compact.png',
+  clear: 'action-clear.png',
+})) {
+  try {
+    SETUP_PNG[key] = 'data:image/png;base64,' + readFileSync(join(__dirname, '../resources/setup', file)).toString('base64');
+  } catch { /* png missing — the plain greyscale icon stands in */ }
+}
+
+// "Claude Code isn't set up" is a different problem from "no session is
+// running", and a user who can't tell them apart has no way forward: the first
+// needs an install, the second just needs a session. Checked at most every few
+// seconds — it touches the filesystem and only matters when nothing is tracked.
+const SETUP_TTL_MS = 5000;
+const SETUP = { checkedAt: 0, needed: false, reason: '' };
+
+function setupNeeded() {
+  if (Date.now() - SETUP.checkedAt < SETUP_TTL_MS) return SETUP.needed;
+  SETUP.checkedAt = Date.now();
+  try {
+    const st = hookStatus();
+    SETUP.needed = !st.claude.installed || st.installed === 0;
+    SETUP.reason = !st.claude.installed ? 'Claude Code not detected' : 'Claude tracking not enabled';
+  } catch (e) {
+    log('setup check failed', e?.message);
+    SETUP.needed = false; // never block the normal icons on a failed probe
+  }
+  return SETUP.needed;
+}
+
+// short line for the big key explaining which half of the setup is missing
+function setupReason() {
+  setupNeeded();
+  return SETUP.reason || 'Claude Code not detected';
+}
+
+// Icon for a key with nothing tracked: its own art in black and white, plus an
+// amber badge when Claude Code still needs setting up.
 function offlineIcon(action) {
+  if (setupNeeded() && SETUP_PNG[action]) return SETUP_PNG[action];
   return OFFLINE_PNG[action] || FAIL_PNG;
 }
 
 // Ulanzi Studio gives a plugin nowhere to explain itself, so the toast shown on
 // a press with nothing tracked doubles as the legend for the grey keys.
 const NO_SESSION_TOAST = 'No Claude Code session — grey keys mean none detected';
+const SETUP_TOAST = 'Claude Code not set up — open this key\'s settings panel';
+
+function noSessionToast() {
+  return setupNeeded() ? SETUP_TOAST : NO_SESSION_TOAST;
+}
+
+// icon identity for the empty-state art, so switching between "needs setup"
+// and "no session" actually re-sends the image
+function offlineKey() {
+  return setupNeeded() ? 'png:setup' : 'png:offline';
+}
 
 const STATE_GIF = {
   working: 'coding',
@@ -128,7 +181,7 @@ function displayedSession(states) {
 
 async function switchPress() {
   const states = readStates();
-  if (!states.length) { $UD.toast(NO_SESSION_TOAST); return; }
+  if (!states.length) { $UD.toast(noSessionToast()); return; }
   const sorted = sessionOrder(states);
   // start from what the big key actually shows: the ask view wins over the
   // session view, so with a question live the cycle starts at that asker
@@ -276,7 +329,7 @@ async function petPress(settings) {
     return focusClaudeSession(agg);
   }
   // nothing tracked: still open the terminal, but say why the pet is grey
-  if (agg.state === 'none') $UD.toast(NO_SESSION_TOAST);
+  if (agg.state === 'none') $UD.toast(noSessionToast());
   return openApp({ app: 'iTerm' });
 }
 
@@ -335,8 +388,10 @@ async function refreshCycleIcon(inst) {
       const states = readStates();
       if (!states.length) {
         // no tracked claude session — showing last terminal name would be
-        // stale/false info (e.g. right after boot), so show a placeholder
-        dataUrl = renderNoSession();
+        // stale/false info (e.g. right after boot), so show a placeholder.
+        // "nothing is set up yet" gets its own screen: waiting for a session
+        // that can never arrive is the one case the user has to act on.
+        dataUrl = setupNeeded() ? renderSetupNeeded(setupReason()) : renderNoSession();
       } else {
         // claude-driven display: pinned or top-priority session's project
         // name + state, never the focused terminal tab (once showed "node")
@@ -406,7 +461,7 @@ function refreshOptIcon(inst) {
     const uuid = ($UD.decodeContext(inst.context) || {}).uuid || '';
     let wanted;
     if (!states.length) {
-      wanted = 'png:offline'; // no claude sessions at all
+      wanted = offlineKey(); // no claude sessions at all
     } else if (uuid === OPT_NEXT_ACTION) {
       wanted = active ? 'gif:wave' : 'gif:dancing';
     } else {
@@ -414,7 +469,8 @@ function refreshOptIcon(inst) {
     }
     if (wanted === inst.lastIcon) return;
     const [kind, name] = wanted.split(':');
-    const PNGS = { offline: offlineIcon(uuid === OPT_NEXT_ACTION ? 'optnext' : 'optok') };
+    const art = offlineIcon(uuid === OPT_NEXT_ACTION ? 'optnext' : 'optok');
+    const PNGS = { offline: art, setup: art };
     if (kind === 'gif' && PET_GIFS[name]) {
       inst.lastIcon = wanted;
       $UD.setGifDataIcon(inst.context, PET_GIFS[name]);
@@ -564,10 +620,12 @@ function refreshPetIcon(inst) {
   try {
     const agg = aggregateState(readStates(), (inst.settings.dir || '').trim());
     if (agg.state === 'none') {
-      // no claude sessions detected — same pet, in black & white
+      // no claude sessions detected — same pet, in black & white (badged when
+      // Claude Code itself still needs setting up)
       const offline = offlineIcon('claudepet');
-      if (offline && inst.lastIcon !== 'offline') {
-        inst.lastIcon = 'offline';
+      const key = offlineKey();
+      if (offline && inst.lastIcon !== key) {
+        inst.lastIcon = key;
         $UD.setBaseDataIcon(inst.context, offline);
       }
       return;
@@ -622,13 +680,13 @@ function refreshCompactIcon(inst) {
   try {
     const states = readStates();
     let wanted;
-    if (!states.length) wanted = 'png:offline';
+    if (!states.length) wanted = offlineKey();
     else if (anyCompacting(states)) wanted = 'gif:bonk';
     else if (Date.now() < COMPACT.confirmUntil) wanted = 'png:eyes';
     else wanted = 'png:yells';
     if (wanted === inst.lastIcon) return;
     const [kind, name] = wanted.split(':');
-    const PNGS = { offline: offlineIcon('compact'), eyes: EYES_PNG, yells: YELLS_PNG };
+    const PNGS = { offline: offlineIcon('compact'), setup: offlineIcon('compact'), eyes: EYES_PNG, yells: YELLS_PNG };
     if (kind === 'gif' && PET_GIFS[name]) {
       inst.lastIcon = wanted;
       $UD.setGifDataIcon(inst.context, PET_GIFS[name]);
@@ -655,7 +713,7 @@ function refreshCompactKeys() {
 
 async function compactPress() {
   const states = readStates();
-  if (!states.length) { $UD.toast(NO_SESSION_TOAST); return; }
+  if (!states.length) { $UD.toast(noSessionToast()); return; }
   if (anyCompacting(states)) return; // already running — do nothing
   const best = displayedSession(states);
   if (promptPending(states, best)) {
@@ -699,14 +757,14 @@ function refreshClearIcon(inst) {
   try {
     const states = readStates();
     let wanted;
-    if (!states.length) wanted = 'png:offline';
+    if (!states.length) wanted = offlineKey();
     // target busy — mirrors the guard in clearPress() so the refusal is visible
     else if (displayedSession(states).state === 'compacting') wanted = 'gif:bonk';
     else if (Date.now() < CLEAR.confirmUntil) wanted = 'png:eyes';
     else wanted = 'png:clear';
     if (wanted === inst.lastIcon) return;
     const [kind, name] = wanted.split(':');
-    const PNGS = { offline: offlineIcon('clear'), eyes: EYES_PNG, clear: CLEAR_PNG };
+    const PNGS = { offline: offlineIcon('clear'), setup: offlineIcon('clear'), eyes: EYES_PNG, clear: CLEAR_PNG };
     if (kind === 'gif' && PET_GIFS[name]) {
       inst.lastIcon = wanted;
       $UD.setGifDataIcon(inst.context, PET_GIFS[name]);
@@ -733,7 +791,7 @@ function refreshClearKeys() {
 
 async function clearPress() {
   const states = readStates();
-  if (!states.length) { $UD.toast(NO_SESSION_TOAST); return; }
+  if (!states.length) { $UD.toast(noSessionToast()); return; }
   const best = displayedSession(states);
   // a question / permission prompt is up: the newline would answer it instead
   // of running /clear (see promptPending). Refuse, and disarm.
@@ -778,12 +836,12 @@ function isSwitch(context) {
 function refreshSwitchIcon(inst) {
   try {
     const states = readStates();
-    const wanted = states.length ? 'gif:workers' : 'png:offline';
+    const wanted = states.length ? 'gif:workers' : offlineKey();
     if (wanted === inst.lastIcon) return;
     if (wanted === 'gif:workers' && PET_GIFS.workers) {
       inst.lastIcon = wanted;
       $UD.setGifDataIcon(inst.context, PET_GIFS.workers);
-    } else if (wanted === 'png:offline' && offlineIcon('sessionswitch')) {
+    } else if (wanted.startsWith('png:') && offlineIcon('sessionswitch')) {
       inst.lastIcon = wanted;
       $UD.setBaseDataIcon(inst.context, offlineIcon('sessionswitch'));
     }
@@ -893,6 +951,42 @@ $UD.onClear((msg) => {
   }
 });
 
+// One snapshot of everything that has to be true for the deck to work. The
+// panel renders it as a checklist: Studio gives a plugin no other place to
+// explain why a key is doing nothing.
+function setupSnapshot() {
+  const hooks = hookStatus();
+  const states = readStates();
+  return {
+    claude: hooks.claude,
+    hooks: { installed: hooks.installed, missing: hooks.missing, outdated: hooks.outdated },
+    terminal: { choice: getTerminalChoice(), access: TERMINAL_ACCESS.result },
+    bigkey: { desired: bigKeyDesired(), actual: bigKeyIsOurs() },
+    sessions: { count: states.length },
+  };
+}
+
+// the Automation prompt is raised on purpose from the panel, never on a poll
+const TERMINAL_ACCESS = { result: 'unchecked' };
+
+// Open the bundled user guide in the default browser. Bundled rather than
+// hosted so it works offline and always matches the installed version; the
+// GitHub README is the fallback if the file is somehow missing. `open` is used
+// directly — this is a mac-only plugin and it beats relying on the host to
+// resolve a local path.
+function openGuide(language) {
+  const lang = String(language || 'en').replace(/[^A-Za-z_]/g, '');
+  for (const name of [`${lang}.html`, 'en.html']) {
+    const file = join(__dirname, '../property-inspector/guide', name);
+    if (existsSync(file)) {
+      log('opening guide', name);
+      spawn('/usr/bin/open', [file], { detached: true, stdio: 'ignore' }).unref();
+      return;
+    }
+  }
+  spawn('/usr/bin/open', ['https://github.com/chilleno/claude-deck#readme'], { detached: true, stdio: 'ignore' }).unref();
+}
+
 // property inspectors ask for the terminal list / set the global choice
 $UD.onSendToPlugin((msg) => {
   const payload = msg.payload || {};
@@ -906,6 +1000,16 @@ $UD.onSendToPlugin((msg) => {
       log('terminal choice ->', payload.value);
       $UD.toast(`Terminal: ${payload.value === 'iterm2' ? 'iTerm2' : 'Terminal.app'}`);
     }
+  } else if (payload.cmd === 'getSetup') {
+    $UD.sendToPropertyInspector({ cmd: 'setup', ...setupSnapshot() }, msg.context);
+  } else if (payload.cmd === 'checkTerminal') {
+    checkTerminalAccess().then(result => {
+      TERMINAL_ACCESS.result = result;
+      log('terminal access:', result);
+      $UD.sendToPropertyInspector({ cmd: 'setup', ...setupSnapshot() }, msg.context);
+    });
+  } else if (payload.cmd === 'openGuide') {
+    openGuide(payload.language);
   } else if (payload.cmd === 'getHookStatus') {
     $UD.sendToPropertyInspector({ cmd: 'hookStatus', ...hookStatus() }, msg.context);
   } else if (payload.cmd === 'installHooks') {
@@ -913,7 +1017,9 @@ $UD.onSendToPlugin((msg) => {
     const errors = results.filter(r => r.error);
     log('hook install', JSON.stringify(results));
     $UD.toast(errors.length ? 'Hook setup had errors' : 'Claude tracking enabled — restart your claude sessions');
+    SETUP.checkedAt = 0; // the keys must drop the "setup needed" badge at once
     $UD.sendToPropertyInspector({ cmd: 'hookStatus', ...hookStatus() }, msg.context);
+    $UD.sendToPropertyInspector({ cmd: 'setup', ...setupSnapshot() }, msg.context);
   }
 });
 

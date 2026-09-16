@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude Deck — 使用指南</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 32px 20px 64px;
+    background: #1e1f22; color: #e8e8ec;
+    font: 15px/1.6 -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans", "Noto Sans KR", Roboto, sans-serif;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: .3px; }
+  h1 .mark { color: #d77757; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 1.2px; opacity: .65;
+       margin: 34px 0 12px; font-weight: 600; }
+  p { margin: 0 0 12px; }
+  .lede { font-size: 16px; }
+  .needs { background: #26272b; border-left: 3px solid #d77757; padding: 12px 14px; border-radius: 0 6px 6px 0; }
+  .step { margin: 0 0 18px; }
+  .step h3 { font-size: 15px; margin: 0 0 4px; }
+  .step p { margin: 0; opacity: .85; }
+  table { border-collapse: collapse; width: 100%; }
+  td { padding: 7px 10px 7px 0; border-bottom: 1px solid #2c2d32; vertical-align: top; }
+  td.k { white-space: nowrap; font-weight: 600; width: 1%; }
+  td.d { opacity: .8; font-size: 14px; }
+  .icons li { margin-bottom: 6px; }
+  .q { font-weight: 600; margin: 0 0 2px; }
+  .a { opacity: .8; margin: 0 0 14px; }
+  code { background: #2c2d32; border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+  a { color: #7ab8f5; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #2c2d32; opacity: .6; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1><span class="mark">Claude</span> Deck</h1>
+  <p class="lede">Claude Deck 會喺按鍵上直接顯示 Claude Code 工作階段嘅狀態：邊個喺度做嘢、邊個喺度問你嘢、仲剩幾多上下文。你亦可以唔掂鍵盤就回答問題、執行 /compact 或 /clear。</p>
+  <p class="needs">你需要：macOS、Ulanzi Studio，以及 Anthropic 嘅 Claude Code CLI。Claude Deck 係 Claude Code 嘅配套外掛，單獨使用冇嘢可以顯示。 <a href="https://docs.claude.com/en/docs/claude-code/setup">https://docs.claude.com/en/docs/claude-code/setup</a></p>
+
+  <h2>開始設定</h2>
+  <div class="step"><h3>1. 安裝 Claude Code</h3><p>Claude Code 係 Anthropic 提供嘅 Claude 命令列工具。請按官方安裝說明安裝，然後喺終端機執行一次 <code>claude</code>，等佢建立設定檔。</p></div>
+  <div class="step"><h3>2. 啟用 Claude 追蹤</h3><p>將任何 Claude Deck 動作拖去按鍵，然後打開佢嘅設定面板。設定清單會顯示仲欠咩，撳 <b>啟用 Claude 追蹤</b>。呢個動作會喺你嘅 Claude Code 設定加入 hook（會先儲存備份），令按鍵可以讀取工作階段狀態。已經行緊嘅 claude 工作階段要重啟。</p></div>
+  <div class="step"><h3>3. 允許控制終端機</h3><p>喺面板揀你嘅終端機（iTerm2 或 Terminal.app），撳 <b>檢查終端機存取權</b> 並同意 macOS 嘅提示。而家處理好，可以避免之後按鍵好似冇反應。如果之前拒絕咗：系統設定 → 私隱與安全性 → 自動化 → Ulanzi Studio。</p></div>
+  <div class="step"><h3>4. 可選：大屏幕</h3><p>撳一次 <b>大屏幕設定</b> 鍵，就可以將 Claude 工作階段顯示放上大按鍵。Ulanzi Studio 會自動重啟以套用（約 15 秒）。再撳一次就可以還返個大按鍵俾內置小工具。</p></div>
+
+  <h2>每個按鍵嘅功能</h2>
+  <table><tr><td class="k">Claude 寵物</td><td class="d">Claude Code 即時狀態:編碼、提問或閒置。撳下跳去需要你嘅工作階段。 圖示變灰 = 未偵測到 Claude Code 工作階段。</td></tr><tr><td class="k">下一個選項</td><td class="d">循環顯示 Claude 提出嘅選項(喺大按鍵顯示)。 圖示變灰 = 未偵測到 Claude Code 工作階段。</td></tr><tr><td class="k">確認選項</td><td class="d">用大按鍵上而家顯示嘅選項回覆 Claude。 圖示變灰 = 未偵測到 Claude Code 工作階段。</td></tr><tr><td class="k">大屏幕設定</td><td class="d">切換大屏幕嘅 Claude 狀態。撳一下即自動完成(Studio 會自動重啟)。</td></tr><tr><td class="k">切換工作階段</td><td class="d">切換大屏顯示嘅 Claude 工作階段（單向循環）。 圖示變灰 = 未偵測到 Claude Code 工作階段。</td></tr><tr><td class="k">Claude 壓縮</td><td class="d">壓縮最上層 Claude 會話的上下文。按一次確認（眼睛），再按一次執行 /compact。 圖示變灰 = 未偵測到 Claude Code 工作階段。</td></tr><tr><td class="k">工作階段屏幕</td><td class="d">大屏幕顯示:工作階段名、狀態同問題選擇器。</td></tr><tr><td class="k">Claude 清空</td><td class="d">清空最上層 Claude 工作階段嘅對話記錄。按一次確認（眼睛），再按一次執行 /clear。 圖示變灰 = 未偵測到 Claude Code 工作階段。</td></tr></table>
+
+  <h2>圖示嘅意思</h2>
+  <ul class="icons"><li><b>彩色</b> — 正在追蹤一個 Claude Code 工作階段。</li><li><b>黑白</b> — 而家冇執行中嘅工作階段。開一個就會回復正常。</li><li><b>黑白加琥珀色圓點</b> — Claude Deck 仲未設定好——打開任何按鍵嘅設定面板，跟住清單逐項完成。</li></ul>
+
+  <h2>如果有問題</h2>
+  <p class="q">claude 行緊，但按鍵仲係灰色</p><p class="a">hook 喺工作階段開始時先讀取，所以喺你啟用追蹤之前已經開咗嘅工作階段唔會上報任何嘢。請重啟佢哋。如果仲係咁，請喺面板睇吓設定清單。</p>
+  <p class="q">撳按鍵冇任何反應</p><p class="a">通常係 macOS 阻止咗終端機控制。喺面板撳 <b>檢查終端機存取權</b>；如果顯示被阻止，請喺 系統設定 → 私隱與安全性 → 自動化 允許 Ulanzi Studio。</p>
+  <p class="q">大按鍵冇顯示問題</p><p class="a">多選題冇辦法喺按鍵回答——按鍵會提示你，並帶你返終端機。其他問題會喺一兩秒內顯示喺大按鍵。</p>
+  <p class="q">大屏幕變返做內置小工具</p><p class="a">編輯頁面時 Ulanzi Studio 會覆寫嗰個位置。再撳一次大屏幕設定鍵，等 Studio 重啟就得。</p>
+
+  <footer>Claude Deck 係開源項目——問題回報同原始碼： <a href="https://github.com/chilleno/claude-deck">https://github.com/chilleno/claude-deck</a> · v2.4.0</footer>
+</main>
+</body>
+</html>

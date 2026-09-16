@@ -4,7 +4,7 @@
   "Description": "Claude Code on the Ulanzi Deck: live status pet, answer questions from the deck, and a big-screen session display.",
   "Overview": "See and control every Claude Code session from your Ulanzi Deck.",
   "Author": "Antonio González",
-  "Version": "2.3.0",
+  "Version": "2.4.0",
   "Icon": "resources/icon.png",
   "Banner": [
     "resources/banners/banner-1.png",

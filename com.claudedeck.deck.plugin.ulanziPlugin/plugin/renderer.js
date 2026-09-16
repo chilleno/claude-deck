@@ -131,6 +131,23 @@ export function renderNoSession() {
   return toDataUrl(svgDoc(body));
 }
 
+// Shown instead of "no session" when Claude Code itself still needs setting up
+// — an install or the tracking hooks are missing, so no session can ever
+// appear until the user acts. Deliberately unlike renderNoSession(): only one
+// of the two states is actionable, and they used to look identical.
+export function renderSetupNeeded(reason) {
+  const font = 'font-family="-apple-system,Helvetica,Arial,sans-serif"';
+  const amber = '#e8a33d';
+  const body =
+    `<text x="24" y="42" ${font} font-size="22" font-weight="700" fill="${ACCENT}" letter-spacing="2">CLAUDE</text>` +
+    `<circle cx="${W / 2 - 132}" cy="101" r="13" fill="${amber}"/>` +
+    `<text x="${W / 2 - 132}" y="108" ${font} font-size="18" font-weight="700" text-anchor="middle" fill="#1e1f22">!</text>` +
+    `<text x="${W / 2 + 14}" y="112" ${font} font-size="29" font-weight="700" text-anchor="middle" fill="${TEXT}">setup needed</text>` +
+    `<text x="${W / 2}" y="148" ${font} font-size="19" font-weight="600" text-anchor="middle" fill="${MUTED}">${escapeXml(reason || 'Claude Code not detected')}</text>` +
+    `<text x="${W / 2}" y="176" ${font} font-size="17" font-weight="600" text-anchor="middle" fill="#4a4a54">open this key's settings panel</text>`;
+  return toDataUrl(svgDoc(body));
+}
+
 // Confirmation flash after answering via the OK key.
 export function renderConfirm(option) {
   const font = 'font-family="-apple-system,Helvetica,Arial,sans-serif"';

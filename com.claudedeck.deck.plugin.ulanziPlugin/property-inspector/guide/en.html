@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude Deck — User Guide</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 32px 20px 64px;
+    background: #1e1f22; color: #e8e8ec;
+    font: 15px/1.6 -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans", "Noto Sans KR", Roboto, sans-serif;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: .3px; }
+  h1 .mark { color: #d77757; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 1.2px; opacity: .65;
+       margin: 34px 0 12px; font-weight: 600; }
+  p { margin: 0 0 12px; }
+  .lede { font-size: 16px; }
+  .needs { background: #26272b; border-left: 3px solid #d77757; padding: 12px 14px; border-radius: 0 6px 6px 0; }
+  .step { margin: 0 0 18px; }
+  .step h3 { font-size: 15px; margin: 0 0 4px; }
+  .step p { margin: 0; opacity: .85; }
+  table { border-collapse: collapse; width: 100%; }
+  td { padding: 7px 10px 7px 0; border-bottom: 1px solid #2c2d32; vertical-align: top; }
+  td.k { white-space: nowrap; font-weight: 600; width: 1%; }
+  td.d { opacity: .8; font-size: 14px; }
+  .icons li { margin-bottom: 6px; }
+  .q { font-weight: 600; margin: 0 0 2px; }
+  .a { opacity: .8; margin: 0 0 14px; }
+  code { background: #2c2d32; border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+  a { color: #7ab8f5; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #2c2d32; opacity: .6; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1><span class="mark">Claude</span> Deck</h1>
+  <p class="lede">Claude Deck shows what your Claude Code sessions are doing, right on the deck: which one is working, which one is asking you something, how much context is left — and it lets you answer questions and run /compact or /clear without touching the keyboard.</p>
+  <p class="needs">You need: macOS, Ulanzi Studio, and Anthropic&#x27;s Claude Code CLI. Claude Deck is a companion for Claude Code — on its own it has nothing to show. <a href="https://docs.claude.com/en/docs/claude-code/setup">https://docs.claude.com/en/docs/claude-code/setup</a></p>
+
+  <h2>Setting up</h2>
+  <div class="step"><h3>1. Install Claude Code</h3><p>Claude Code is Anthropic's command-line tool for Claude. Follow the official install instructions, then run <code>claude</code> once in a terminal so it creates its settings.</p></div>
+  <div class="step"><h3>2. Turn on Claude tracking</h3><p>Drag any Claude Deck action onto a key and open its settings panel. The Setup list shows what is still missing; press <b>Enable Claude tracking</b>. This adds hook entries to your Claude Code settings (a backup is saved first) so the deck can see session status. Restart any claude sessions that are already running.</p></div>
+  <div class="step"><h3>3. Allow terminal control</h3><p>Pick your terminal (iTerm2 or Terminal.app) in the panel, then press <b>Check terminal access</b> and accept the macOS prompt. Answering it now avoids a key that later seems to do nothing. If you refused before: System Settings → Privacy &amp; Security → Automation → Ulanzi Studio.</p></div>
+  <div class="step"><h3>4. Optional: the big screen</h3><p>Press the <b>Claude Screen Setup</b> key once to put the Claude session display on the big key. Ulanzi Studio restarts itself to apply this (about 15 seconds). Press it again to give the big key back to the built-in widget.</p></div>
+
+  <h2>What each key does</h2>
+  <table><tr><td class="k">Claude Pet</td><td class="d">Live Claude Code status: coding, asking, or idle. Press to jump to the session needing you. Grey icon = no Claude Code session detected.</td></tr><tr><td class="k">Claude Option Next</td><td class="d">Cycle through the options Claude is asking about (shown on the big key). Grey icon = no Claude Code session detected.</td></tr><tr><td class="k">Claude Option OK</td><td class="d">Answer Claude with the option currently shown on the big key. Grey icon = no Claude Code session detected.</td></tr><tr><td class="k">Claude Screen Setup</td><td class="d">Toggle Claude status on the big screen. Press = automatic (Studio restarts itself).</td></tr><tr><td class="k">Claude Session Switch</td><td class="d">Cycle which Claude session the big screen shows (one way, wraps around). Grey icon = no Claude Code session detected.</td></tr><tr><td class="k">Claude Compact</td><td class="d">Compact the top Claude session&#x27;s context. Press once to confirm (eyes), press again to run /compact. Grey icon = no Claude Code session detected.</td></tr><tr><td class="k">Claude Session Screen</td><td class="d">The big-screen display: session name, status, and the question picker.</td></tr><tr><td class="k">Claude Clear</td><td class="d">Wipe the top Claude session&#x27;s conversation history. Press once to confirm (eyes), press again to run /clear. Grey icon = no Claude Code session detected.</td></tr></table>
+
+  <h2>What the icons mean</h2>
+  <ul class="icons"><li><b>In colour</b> — a Claude Code session is being tracked.</li><li><b>Black and white</b> — no session is running right now. Start one and the keys come back to life.</li><li><b>Black and white with an amber dot</b> — Claude Deck still needs setting up — open any key&#x27;s settings panel and work through the Setup list.</li></ul>
+
+  <h2>If something doesn&#x27;t work</h2>
+  <p class="q">The keys stay grey even though claude is running</p><p class="a">The hooks are read when a session starts, so sessions that were already open when you enabled tracking don't report anything. Restart them. If it still doesn't help, open the panel and check the Setup list.</p>
+  <p class="q">A key does nothing when I press it</p><p class="a">That is usually macOS blocking terminal control. Press <b>Check terminal access</b> in the panel; if it says blocked, allow Ulanzi Studio under System Settings → Privacy &amp; Security → Automation.</p>
+  <p class="q">Questions don&#x27;t appear on the big key</p><p class="a">Multi-select questions can't be answered from the deck — the key says so and takes you to the terminal instead. Everything else shows up on the big key within a second or two.</p>
+  <p class="q">The big screen went back to the built-in widget</p><p class="a">Ulanzi Studio rewrites that slot when you edit the page. Press Claude Screen Setup again and let Studio restart.</p>
+
+  <footer>Claude Deck is open source — issues and source at <a href="https://github.com/chilleno/claude-deck">https://github.com/chilleno/claude-deck</a> · v2.4.0</footer>
+</main>
+</body>
+</html>
