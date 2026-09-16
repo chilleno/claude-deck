@@ -10,7 +10,7 @@ Claude Code on the Ulanzi Deck D200 (macOS): live status pet, answer Claude's qu
 
 Ulanzi Studio scans `~/Library/Application Support/Ulanzi/UlanziDeck/Plugins/`, launches the plugin's `plugin/app.js` with its bundled Node.js (`127.0.0.1 3906 <lang>`), and talks WebSocket on `localhost:3906`. SDK client in `plugin/plugin-common-node/`.
 
-Claude Code state comes from **hooks**: `hooks/claude-hook.py` runs on every Claude event → one JSON state file per session in `~/Library/Application Support/Ulanzi/UlanziDeck/claude-state/` → plugin polls (pet/opt keys 1 s, big key 3 s). Hooks are wired into every `~/.claude*` profile by `sync-hooks.sh` (runs on install) **or** self-served from the plugin's settings panel ("Enable Claude tracking" button — marketplace installs need no scripts).
+Claude Code state comes from **hooks**: `hooks/claude-hook.js` runs on every Claude event (registered with the Node that Ulanzi Studio ships, via `process.execPath`; `hooks/claude-hook.py` is the byte-identical python fallback for the case where that path can't be resolved) → one JSON state file per session in `~/Library/Application Support/Ulanzi/UlanziDeck/claude-state/` → plugin polls (pet/opt keys 1 s, big key 3 s). Hooks are wired into every `~/.claude*` profile by `sync-hooks.sh` (runs on install) **or** self-served from the plugin's settings panel ("Enable Claude tracking" button — marketplace installs need no scripts).
 
 ## Actions (8)
 
@@ -25,15 +25,15 @@ Claude Code state comes from **hooks**: `hooks/claude-hook.py` runs on every Cla
 | **Claude Clear** | Wipes the top session's conversation history. Two-press confirm: clear image idle → press once → eyes image for 8 s → press again → `/clear` typed into that session's terminal. Refused (with a toast) while a question is pending, and while the target session is compacting — bonk GIF then. |
 | **Claude Session Screen** | The big-key display: top-priority Claude session — project name, status badge, `model · effort · branch` row and a colored context bar (or a compaction progress bar) — plus the question picker when asking and a confirm flash after OK. Shows a "no session" placeholder when nothing is tracked (never the stale terminal name). Placed on the big key by Screen Setup. Panel hosts the terminal selector. |
 
-All small keys show the fail image when no claude session is tracked.
+All small keys fall back to their **own icon in black and white** when no claude session is tracked (`resources/offline/`, built by `tools/make-offline-icons.py`) — the key on the deck always matches the icon Ulanzi Studio lists in the action bar, it just loses its colour. Pressing one then toasts *No Claude Code session — grey keys mean none detected*, the big key spells it out under the "no session" placeholder, and every property-inspector panel carries the same legend.
 
 ### Key guide — what each GIF means
 
 **Claude Pet** — one glance, all sessions:
 
-| <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/coding.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/magic.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/idle.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/fail.png" width="72"> |
+| <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/coding.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/magic.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/idle.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/offline/action-claudepet.png" width="72"> |
 |:---:|:---:|:---:|:---:|
-| working / compacting | asking or needs you | idle | no session tracked |
+| working / compacting | asking or needs you | idle | no session tracked (grey) |
 
 **Option Next / Option OK** — the question-answering pair:
 
@@ -65,9 +65,9 @@ would confirm the highlighted option instead of running the command) and toast
 
 **Claude Session Switch** — session pinning:
 
-| <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/workers.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/fail.png" width="72"> |
+| <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/pets/workers.gif" width="72"> | <img src="com.claudedeck.deck.plugin.ulanziPlugin/resources/offline/action-sessionswitch.png" width="72"> |
 |:---:|:---:|
-| sessions tracked — press to cycle | nothing to switch |
+| sessions tracked — press to cycle | nothing to switch (grey) |
 
 ### Question picker (big key + Option keys)
 
@@ -114,7 +114,7 @@ Studio hard-wires the slot to its built-in widget; the widget mode list is compi
 | Device | Ulanzi D200 (big-screen features target its 458×196 center display; keys work on other Ulanzi decks) |
 | Terminal | iTerm2 or Terminal.app (Claude Code running inside one of them) |
 | Claude Code | any recent version with hooks support |
-| Python | `python3` on PATH (macOS ships one; hooks use stdlib only) |
+| Python | only for the fallback hook and the big-key scripts — the state hook runs on Studio's bundled Node |
 
 ## Install (users)
 
@@ -143,12 +143,13 @@ macOS permissions (one-time): Accessibility for Ulanzi Studio + Automation → c
 
 Self-serve portal: register → Upload Works → Plugins → zip of the `.ulanziPlugin` folder (≤50 MB, folder at zip root) → review → published. Mac-only accepted. UUID immutable after publishing.
 
-Ready: hooks self-setup in-panel · icons per spec (256 + 512@2x plugin, 288 app, 20×20 white SVG category) · 9 language files · listing asset drafts in `assets/store/` (1:1 cover, 3:2 banners, 366×244 gallery). Verify GIF art ownership before submitting (IP policy). Unofficial fast lane: narlei's Community Store (GitHub release + repo URL).
+Ready: setup checklist + bundled 9-language user guide in-panel (`property-inspector/guide/`, built by `tools/build-guide.py`) · hooks self-setup in-panel · icons per spec (256 + 512@2x plugin, 288 app, 20×20 white SVG category) · 9 language files, panels included (`Localization` map + `data-localize`) · listing asset drafts in `assets/store/` (1:1 cover, 3:2 banners, 366×244 gallery). Verify GIF art ownership before submitting (IP policy). Unofficial fast lane: narlei's Community Store (GitHub release + repo URL).
 
 ## Debugging
 
 - Hook event log: `touch claude-state/.debug` → `claude-state/events.log` (delete `.debug` after — and always delete any fake `decktest.json`)
-- Test hook: pipe fake event JSON into `hooks/claude-hook.py`, inspect `claude-state/<sid>.json`
+- Test hook: pipe fake event JSON into `hooks/claude-hook.js`, inspect `claude-state/<sid>.json`
+- Panel strings live in `tools/build-locales.py` (one table → 9 language files); `tools/check-locales.py` fails if a panel asks for a key no language file has
 - Which profile a running claude uses: `ps eww <pid> | grep -o 'CLAUDE_CONFIG_DIR=[^ ]*'`
 - Plugin process: `ps aux | grep com.claudedeck`
 
