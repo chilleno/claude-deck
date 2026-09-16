@@ -32,11 +32,19 @@
   code { background: #2c2d32; border-radius: 4px; padding: 1px 5px; font-size: 13px; }
   a { color: #7ab8f5; }
   footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #2c2d32; opacity: .6; font-size: 13px; }
+  .langs { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 22px; }
+  .langs a {
+    padding: 3px 9px; border-radius: 999px; font-size: 13px; text-decoration: none;
+    color: #b9b9c2; background: #26272b; border: 1px solid transparent;
+  }
+  .langs a:hover { background: #303137; color: #e8e8ec; }
+  .langs a[aria-current="page"] { background: #d77757; border-color: #d77757; color: #1e1f22; font-weight: 600; }
 </style>
 </head>
 <body>
 <main>
   <h1><span class="mark">Claude</span> Deck</h1>
+  <nav class="langs"><a href="en.html" hreflang="en">English</a><a href="es_ES.html" hreflang="es-ES">Español</a><a href="fr.html" hreflang="fr">Français</a><a href="de_DE.html" hreflang="de-DE">Deutsch</a><a href="pt_PT.html" hreflang="pt-PT">Português</a><a href="ja_JP.html" hreflang="ja-JP">日本語</a><a href="ko_KR.html" hreflang="ko-KR">한국어</a><a href="zh_CN.html" hreflang="zh-CN">简体中文</a><a href="zh_HK.html" hreflang="zh-HK" aria-current="page">繁體中文</a></nav>
   <p class="lede">Claude Deck 會喺按鍵上直接顯示 Claude Code 工作階段嘅狀態：邊個喺度做嘢、邊個喺度問你嘢、仲剩幾多上下文。你亦可以唔掂鍵盤就回答問題、執行 /compact 或 /clear。</p>
   <p class="needs">你需要：macOS、Ulanzi Studio，以及 Anthropic 嘅 Claude Code CLI。Claude Deck 係 Claude Code 嘅配套外掛，單獨使用冇嘢可以顯示。 <a href="https://docs.claude.com/en/docs/claude-code/setup">https://docs.claude.com/en/docs/claude-code/setup</a></p>
 

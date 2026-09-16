@@ -19,6 +19,20 @@ ROOT = Path(__file__).resolve().parent.parent / "com.claudedeck.deck.plugin.ulan
 OUT = ROOT / "property-inspector" / "guide"
 LANGS = ["en", "es_ES", "fr", "de_DE", "pt_PT", "ja_JP", "ko_KR", "zh_CN", "zh_HK"]
 
+# Shown in the in-page language switcher. Always written in the target language
+# — someone who opened the wrong page can't read a list translated into it.
+LANG_NAMES = {
+    "en": "English",
+    "es_ES": "Español",
+    "fr": "Français",
+    "de_DE": "Deutsch",
+    "pt_PT": "Português",
+    "ja_JP": "日本語",
+    "ko_KR": "한국어",
+    "zh_CN": "简体中文",
+    "zh_HK": "繁體中文",
+}
+
 DOCS_URL = "https://docs.claude.com/en/docs/claude-code/setup"
 REPO_URL = "https://github.com/chilleno/claude-deck"
 
@@ -382,11 +396,19 @@ TEMPLATE = """<!DOCTYPE html>
   code {{ background: #2c2d32; border-radius: 4px; padding: 1px 5px; font-size: 13px; }}
   a {{ color: #7ab8f5; }}
   footer {{ margin-top: 40px; padding-top: 16px; border-top: 1px solid #2c2d32; opacity: .6; font-size: 13px; }}
+  .langs {{ display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 22px; }}
+  .langs a {{
+    padding: 3px 9px; border-radius: 999px; font-size: 13px; text-decoration: none;
+    color: #b9b9c2; background: #26272b; border: 1px solid transparent;
+  }}
+  .langs a:hover {{ background: #303137; color: #e8e8ec; }}
+  .langs a[aria-current="page"] {{ background: #d77757; border-color: #d77757; color: #1e1f22; font-weight: 600; }}
 </style>
 </head>
 <body>
 <main>
   <h1><span class="mark">Claude</span> Deck</h1>
+  <nav class="langs">{langs}</nav>
   <p class="lede">{intro}</p>
   <p class="needs">{needs} <a href="{docs}">{docs}</a></p>
 
@@ -424,11 +446,19 @@ def build(lang: str) -> str:
         for a in data["Actions"]
     )
     icons = "".join(f"<li><b>{escape(n)}</b> — {escape(d)}</li>" for n, d in t["icons"])
+    # sibling pages sit next to this one, so plain relative links work whether
+    # the guide is opened from disk or served over http
+    langs = "".join(
+        f'<a href="{other}.html" hreflang="{other.replace("_", "-")}"'
+        f'{" aria-current=\"page\"" if other == lang else ""}>{escape(LANG_NAMES[other])}</a>'
+        for other in LANGS
+    )
     trouble = "\n  ".join(
         f'<p class="q">{escape(q)}</p><p class="a">{a}</p>' for q, a in t["trouble"]
     )
     return TEMPLATE.format(
         htmllang=lang.replace("_", "-"),
+        langs=langs,
         title=escape(t["title"]),
         intro=escape(t["intro"]),
         needs=escape(t["needs"]),
