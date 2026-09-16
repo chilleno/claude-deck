@@ -125,7 +125,9 @@ export function renderNoSession() {
     `<text x="24" y="42" ${font} font-size="22" font-weight="700" fill="${ACCENT}" letter-spacing="2">CLAUDE</text>` +
     `<circle cx="${W / 2 - 96}" cy="102" r="8" fill="#3a3a42"/>` +
     `<text x="${W / 2 + 12}" y="112" ${font} font-size="30" font-weight="700" text-anchor="middle" fill="${MUTED}">no session</text>` +
-    `<text x="${W / 2}" y="152" ${font} font-size="20" font-weight="600" text-anchor="middle" fill="#5a5a64">waiting for a claude session…</text>`;
+    `<text x="${W / 2}" y="148" ${font} font-size="20" font-weight="600" text-anchor="middle" fill="#5a5a64">waiting for a claude session…</text>` +
+    // the other keys go black & white at the same time — say so once, here
+    `<text x="${W / 2}" y="176" ${font} font-size="17" font-weight="600" text-anchor="middle" fill="#4a4a54">grey keys = nothing detected</text>`;
   return toDataUrl(svgDoc(body));
 }
 

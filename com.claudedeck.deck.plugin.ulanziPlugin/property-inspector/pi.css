@@ -1,0 +1,89 @@
+/* Shared property-inspector styling for every Claude Deck panel.
+ * Loaded after libs/css/uspi.css so it can correct the SDK defaults. */
+
+.panel {
+  /* bottom padding keeps the last control off the panel's cut edge */
+  padding: 8px 12px 18px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.panel h4 {
+  margin: 6px 0 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+  opacity: .8;
+}
+
+.panel label {
+  display: block;
+  margin: 10px 0 4px;
+  font-weight: 600;
+}
+
+.panel input[type=text],
+.panel select,
+.panel textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: 4px;
+  color: inherit;
+  padding: 6px;
+  font: inherit;
+}
+
+.panel textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+/* Studio's WebView renders selects invisible without an explicit background */
+.panel select,
+.panel select option {
+  background: #2c2c33;
+  color: #ffffff;
+}
+
+.muted {
+  opacity: .6;
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+/* uspi.css pins every button to width:124px + a fixed height, which wrapped
+ * longer labels onto a second line the panel then clipped. Size to the text
+ * instead and never wrap — translations are longer than the English label. */
+.panel button.pi-button {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  min-height: var(--uspi-height, 30px);
+  margin-top: 8px;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 4px;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.panel button.pi-button.primary {
+  background: #3ecf6b;
+  color: #1f1f23;
+}
+
+/* the grey-key legend: quiet, but present on every panel */
+.legend {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  opacity: .6;
+  font-size: 11px;
+  line-height: 1.45;
+}

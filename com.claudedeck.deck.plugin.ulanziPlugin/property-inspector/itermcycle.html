@@ -5,31 +5,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Claude Session Screen</title>
   <link rel="stylesheet" href="../libs/css/uspi.css">
-  <style>
-    .panel { padding: 8px 12px; font-size: 12px; line-height: 1.5; }
-    .panel label { display: block; margin: 10px 0 4px; font-weight: 600; }
-    .panel input[type=text], .panel select, .panel textarea {
-      width: 100%; box-sizing: border-box; background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.15); border-radius: 4px;
-      color: inherit; padding: 6px; font: inherit;
-    }
-    .panel textarea { min-height: 60px; resize: vertical; }
-    .panel .check { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
-    .panel .check label { margin: 0; }
-    .muted { opacity: .6; font-size: 11px; margin-top: 6px; }
-    .panel select { background: #2c2c33; color: #ffffff; }
-    .panel select option { background: #2c2c33; color: #ffffff; }
-  </style>
+  <link rel="stylesheet" href="./pi.css">
 </head>
 <body>
   <div class="udpi-wrapper hidden uspi-wrapper">
     <form id="property-inspector" onsubmit="return false">
       <div class="panel">
-        <label for="mode">Cycle between</label>
-        <select id="mode"><option value="windows">Windows (cmd+`)</option><option value="tabs">Tabs (cmd+shift+])</option></select>
-        <label for="terminal">Terminal</label>
+        <label for="mode" data-localize="cycle_label">Cycle between</label>
+        <select id="mode">
+          <option value="windows" data-localize="cycle_windows">Windows (cmd+`)</option>
+          <option value="tabs" data-localize="cycle_tabs">Tabs (cmd+shift+])</option>
+        </select>
+        <label for="terminal" data-localize="terminal_label">Terminal</label>
         <select id="terminal"></select>
-        <div class="muted">Global choice — used by all Claude Deck keys (session display, jump, answering).</div>
+        <div class="muted" data-localize="terminal_help_cycle">Global choice — used by all Claude Deck keys (session display, jump, answering).</div>
+        <div class="legend" data-localize="grey_legend">Black-and-white keys mean no Claude Code session is being tracked. The keys return to colour as soon as a session is detected.</div>
       </div>
     </form>
   </div>

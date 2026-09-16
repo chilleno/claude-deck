@@ -4,7 +4,7 @@
   "Description": "Claude Code on the Ulanzi Deck: live status pet, answer questions from the deck, and a big-screen session display.",
   "Overview": "See and control every Claude Code session from your Ulanzi Deck.",
   "Author": "Antonio González",
-  "Version": "2.2.0",
+  "Version": "2.3.0",
   "Icon": "resources/icon.png",
   "Banner": [
     "resources/banners/banner-1.png",
@@ -19,7 +19,7 @@
   "Actions": [
     {
       "Name": "Claude Pet",
-      "Tooltip": "Live Claude Code status: coding, asking, or idle. Press to jump to the session needing you.",
+      "Tooltip": "Live Claude Code status: coding, asking, or idle. Press to jump to the session needing you. Grey icon = no Claude Code session detected.",
       "Icon": "resources/action-claudepet.png",
       "PropertyInspectorPath": "property-inspector/claudepet.html",
       "UUID": "com.claudedeck.deck.plugin.claudepet",
@@ -36,7 +36,7 @@
     },
     {
       "Name": "Claude Option Next",
-      "Tooltip": "Cycle through the options Claude is asking about (shown on the big key).",
+      "Tooltip": "Cycle through the options Claude is asking about (shown on the big key). Grey icon = no Claude Code session detected.",
       "Icon": "resources/action-optnext.png",
       "UUID": "com.claudedeck.deck.plugin.optnext",
       "States": [
@@ -52,7 +52,7 @@
     },
     {
       "Name": "Claude Option OK",
-      "Tooltip": "Answer Claude with the option currently shown on the big key.",
+      "Tooltip": "Answer Claude with the option currently shown on the big key. Grey icon = no Claude Code session detected.",
       "Icon": "resources/action-optok.png",
       "UUID": "com.claudedeck.deck.plugin.optok",
       "States": [
@@ -85,7 +85,7 @@
     },
     {
       "Name": "Claude Session Switch",
-      "Tooltip": "Cycle which Claude session the big screen shows (one way, wraps around).",
+      "Tooltip": "Cycle which Claude session the big screen shows (one way, wraps around). Grey icon = no Claude Code session detected.",
       "Icon": "resources/action-sessionswitch.png",
       "UUID": "com.claudedeck.deck.plugin.sessionswitch",
       "States": [
@@ -101,7 +101,7 @@
     },
     {
       "Name": "Claude Compact",
-      "Tooltip": "Compact the top Claude session's context. Press once to confirm (eyes), press again to run /compact.",
+      "Tooltip": "Compact the top Claude session's context. Press once to confirm (eyes), press again to run /compact. Grey icon = no Claude Code session detected.",
       "Icon": "resources/action-compact.png",
       "UUID": "com.claudedeck.deck.plugin.compact",
       "States": [
@@ -134,7 +134,7 @@
     },
     {
       "Name": "Claude Clear",
-      "Tooltip": "Wipe the top Claude session's conversation history. Press once to confirm (eyes), press again to run /clear.",
+      "Tooltip": "Wipe the top Claude session's conversation history. Press once to confirm (eyes), press again to run /clear. Grey icon = no Claude Code session detected.",
       "Icon": "resources/action-clear.png",
       "UUID": "com.claudedeck.deck.plugin.clear",
       "States": [

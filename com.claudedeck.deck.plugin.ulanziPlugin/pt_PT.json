@@ -4,15 +4,15 @@
   "Actions": [
     {
       "Name": "Mascote Claude",
-      "Tooltip": "Estado ao vivo do Claude Code: a programar, a perguntar ou parado. Prima para ir à sessão que precisa de si."
+      "Tooltip": "Estado ao vivo do Claude Code: a programar, a perguntar ou parado. Prima para ir à sessão que precisa de si. Ícone cinzento = nenhuma sessão do Claude Code detetada."
     },
     {
       "Name": "Próxima Opção",
-      "Tooltip": "Percorra as opções que o Claude está a perguntar (mostradas na tecla grande)."
+      "Tooltip": "Percorra as opções que o Claude está a perguntar (mostradas na tecla grande). Ícone cinzento = nenhuma sessão do Claude Code detetada."
     },
     {
       "Name": "Confirmar Opção",
-      "Tooltip": "Responda ao Claude com a opção mostrada na tecla grande."
+      "Tooltip": "Responda ao Claude com a opção mostrada na tecla grande. Ícone cinzento = nenhuma sessão do Claude Code detetada."
     },
     {
       "Name": "Configurar Ecrã",
@@ -20,11 +20,11 @@
     },
     {
       "Name": "Mudar Sessão",
-      "Tooltip": "Alterna qual sessão do Claude o ecrã grande mostra (um sentido, volta ao início)."
+      "Tooltip": "Alterna qual sessão do Claude o ecrã grande mostra (um sentido, volta ao início). Ícone cinzento = nenhuma sessão do Claude Code detetada."
     },
     {
       "Name": "Claude Compact",
-      "Tooltip": "Compacta o contexto da sessão Claude principal. Prima uma vez para confirmar (olhos) e novamente para executar /compact."
+      "Tooltip": "Compacta o contexto da sessão Claude principal. Prima uma vez para confirmar (olhos) e novamente para executar /compact. Ícone cinzento = nenhuma sessão do Claude Code detetada."
     },
     {
       "Name": "Ecrã de Sessão",
@@ -32,8 +32,30 @@
     },
     {
       "Name": "Claude Clear",
-      "Tooltip": "Apaga o histórico de conversa da sessão Claude principal. Prima uma vez para confirmar (olhos) e novamente para executar /clear."
+      "Tooltip": "Apaga o histórico de conversa da sessão Claude principal. Prima uma vez para confirmar (olhos) e novamente para executar /clear. Ícone cinzento = nenhuma sessão do Claude Code detetada."
     }
   ],
-  "Localization": {}
+  "Localization": {
+    "bigscreen_title": "Estado do Claude no ecrã grande",
+    "bigscreen_help": "Prima esta tecla para alternar o ecrã grande entre o estado do Claude e o widget incorporado. O Ulanzi Studio reinicia sozinho para aplicar (~15 s). É guardada automaticamente uma cópia de segurança da página. Se o Studio remover o ecrã grande depois de editar a página, a tecla mostra a animação de carregamento — reinicie o Studio para voltar a aplicar.",
+    "tracking_title": "Monitorização do Claude Code",
+    "tracking_button": "Ativar monitorização do Claude",
+    "tracking_help": "Adiciona os hooks às definições do Claude Code (~/.claude*/settings.json, com cópia de segurança) para o deck ver o estado das sessões. Reinicie depois as sessões do claude em execução.",
+    "grey_legend": "Teclas a preto e branco significam que não há nenhuma sessão do Claude Code detetada. Voltam a ter cor assim que uma sessão for detetada.",
+    "hook_checking": "A verificar…",
+    "hook_enabled_one": "Monitorização do Claude: ativa ({n} perfil)",
+    "hook_enabled_many": "Monitorização do Claude: ativa ({n} perfis)",
+    "hook_none": "Monitorização do Claude: não foi encontrada nenhuma instalação do Claude Code (falta ~/.claude)",
+    "hook_missing_one": "Monitorização do Claude: {n} perfil por configurar",
+    "hook_missing_many": "Monitorização do Claude: {n} perfis por configurar",
+    "pet_dir_label": "Pasta do projeto a vigiar (opcional)",
+    "pet_dir_placeholder": "vazio = todas as sessões do claude",
+    "pet_dir_help": "Deixe vazio para ver o estado combinado de todas as sessões do Claude Code. Indique um caminho para vigiar apenas essa. Premir = ir para a sessão que precisa de si.",
+    "terminal_label": "Terminal",
+    "terminal_help": "Escolha global — usada por todas as teclas do Claude Deck.",
+    "terminal_help_cycle": "Escolha global — usada por todas as teclas do Claude Deck (ecrã de sessão, salto e respostas).",
+    "cycle_label": "Alternar entre",
+    "cycle_windows": "Janelas (cmd+`)",
+    "cycle_tabs": "Separadores (cmd+shift+])"
+  }
 }

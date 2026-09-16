@@ -4,15 +4,15 @@
   "Actions": [
     {
       "Name": "Claude ペット",
-      "Tooltip": "Claude Code のライブ状態：コーディング中・質問中・待機中。押すと対象セッションへ移動。"
+      "Tooltip": "Claude Code のライブ状態：コーディング中・質問中・待機中。押すと対象セッションへ移動。 アイコンがグレー = Claude Code のセッションが未検出です。"
     },
     {
       "Name": "次のオプション",
-      "Tooltip": "Claude の質問オプションを切り替え（ビッグキーに表示）。"
+      "Tooltip": "Claude の質問オプションを切り替え（ビッグキーに表示）。 アイコンがグレー = Claude Code のセッションが未検出です。"
     },
     {
       "Name": "オプション確定",
-      "Tooltip": "ビッグキーに表示中のオプションで Claude に回答。"
+      "Tooltip": "ビッグキーに表示中のオプションで Claude に回答。 アイコンがグレー = Claude Code のセッションが未検出です。"
     },
     {
       "Name": "スクリーン設定",
@@ -20,11 +20,11 @@
     },
     {
       "Name": "セッション切替",
-      "Tooltip": "ビッグスクリーンに表示するClaudeセッションを切り替えます（一方向、最後で最初に戻る）。"
+      "Tooltip": "ビッグスクリーンに表示するClaudeセッションを切り替えます（一方向、最後で最初に戻る）。 アイコンがグレー = Claude Code のセッションが未検出です。"
     },
     {
       "Name": "Claude コンパクト",
-      "Tooltip": "最上位の Claude セッションのコンテキストを圧縮します。1回押して確認（目）、もう1回押すと /compact を実行。"
+      "Tooltip": "最上位の Claude セッションのコンテキストを圧縮します。1回押して確認（目）、もう1回押すと /compact を実行。 アイコンがグレー = Claude Code のセッションが未検出です。"
     },
     {
       "Name": "セッション画面",
@@ -32,8 +32,30 @@
     },
     {
       "Name": "Claude クリア",
-      "Tooltip": "最上位の Claude セッションの会話履歴を消去します。1回押して確認（目）、もう1回押すと /clear を実行。"
+      "Tooltip": "最上位の Claude セッションの会話履歴を消去します。1回押して確認（目）、もう1回押すと /clear を実行。 アイコンがグレー = Claude Code のセッションが未検出です。"
     }
   ],
-  "Localization": {}
+  "Localization": {
+    "bigscreen_title": "ビッグスクリーンの Claude 状態",
+    "bigscreen_help": "このキーを押すと、ビッグスクリーンの表示を Claude の状態と内蔵ウィジェットで切り替えます。適用のため Ulanzi Studio が自動で再起動します（約15秒）。ページのバックアップは自動保存されます。ページ編集後に Studio が表示を削除した場合、キーはローディングアニメーションになります。Studio を再起動すると再適用されます。",
+    "tracking_title": "Claude Code のトラッキング",
+    "tracking_button": "Claude トラッキングを有効化",
+    "tracking_help": "Claude Code の設定（~/.claude*/settings.json、バックアップを保存）にフックを追加し、デッキがセッション状態を取得できるようにします。実行中の claude セッションはその後再起動してください。",
+    "grey_legend": "キーが白黒のときは、Claude Code のセッションが検出されていません。セッションを検出すると自動的にカラーへ戻ります。",
+    "hook_checking": "確認中…",
+    "hook_enabled_one": "Claude トラッキング：有効（{n} プロファイル）",
+    "hook_enabled_many": "Claude トラッキング：有効（{n} プロファイル）",
+    "hook_none": "Claude トラッキング：Claude Code のインストールが見つかりません（~/.claude がありません）",
+    "hook_missing_one": "Claude トラッキング：{n} プロファイルが未設定",
+    "hook_missing_many": "Claude トラッキング：{n} プロファイルが未設定",
+    "pet_dir_label": "監視するプロジェクトフォルダ（任意）",
+    "pet_dir_placeholder": "空欄 = すべての claude セッション",
+    "pet_dir_help": "空欄にすると、すべての Claude Code セッションの状態をまとめて表示します。パスを指定すると、そのセッションだけを監視します。押すと対象セッションへ移動します。",
+    "terminal_label": "ターミナル",
+    "terminal_help": "全体設定：すべての Claude Deck キーで使われます。",
+    "terminal_help_cycle": "全体設定：すべての Claude Deck キーで使われます（セッション表示・移動・回答）。",
+    "cycle_label": "切り替え対象",
+    "cycle_windows": "ウインドウ（cmd+`）",
+    "cycle_tabs": "タブ（cmd+shift+]）"
+  }
 }

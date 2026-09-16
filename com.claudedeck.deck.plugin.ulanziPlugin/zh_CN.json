@@ -4,15 +4,15 @@
   "Actions": [
     {
       "Name": "Claude 宠物",
-      "Tooltip": "Claude Code 实时状态：编码、提问或空闲。按下跳转到需要你的会话。"
+      "Tooltip": "Claude Code 实时状态：编码、提问或空闲。按下跳转到需要你的会话。 图标变灰 = 未检测到 Claude Code 会话。"
     },
     {
       "Name": "下一个选项",
-      "Tooltip": "循环浏览 Claude 提出的选项（显示在大按键上）。"
+      "Tooltip": "循环浏览 Claude 提出的选项（显示在大按键上）。 图标变灰 = 未检测到 Claude Code 会话。"
     },
     {
       "Name": "确认选项",
-      "Tooltip": "用大按键上当前显示的选项回答 Claude。"
+      "Tooltip": "用大按键上当前显示的选项回答 Claude。 图标变灰 = 未检测到 Claude Code 会话。"
     },
     {
       "Name": "大屏设置",
@@ -20,11 +20,11 @@
     },
     {
       "Name": "切换会话",
-      "Tooltip": "切换大屏显示的 Claude 会话（单向循环）。"
+      "Tooltip": "切换大屏显示的 Claude 会话（单向循环）。 图标变灰 = 未检测到 Claude Code 会话。"
     },
     {
       "Name": "Claude 压缩",
-      "Tooltip": "压缩最上层 Claude 会话的上下文。按一次确认（眼睛），再按一次执行 /compact。"
+      "Tooltip": "压缩最上层 Claude 会话的上下文。按一次确认（眼睛），再按一次执行 /compact。 图标变灰 = 未检测到 Claude Code 会话。"
     },
     {
       "Name": "会话大屏",
@@ -32,8 +32,30 @@
     },
     {
       "Name": "Claude 清空",
-      "Tooltip": "清空最上层 Claude 会话的对话历史。按一次确认（眼睛），再按一次执行 /clear。"
+      "Tooltip": "清空最上层 Claude 会话的对话历史。按一次确认（眼睛），再按一次执行 /clear。 图标变灰 = 未检测到 Claude Code 会话。"
     }
   ],
-  "Localization": {}
+  "Localization": {
+    "bigscreen_title": "大屏上的 Claude 状态",
+    "bigscreen_help": "按此键可在 Claude 状态和内置小组件之间切换大屏显示。Ulanzi Studio 会自行重启以生效（约 15 秒），并自动保存页面备份。如果编辑页面后 Studio 移除了大屏显示，按键会显示加载动画——重启 Studio 即可重新应用。",
+    "tracking_title": "Claude Code 追踪",
+    "tracking_button": "启用 Claude 追踪",
+    "tracking_help": "在 Claude Code 配置（~/.claude*/settings.json，会保存备份）中添加 hook，使按键能读取会话状态。之后请重启正在运行的 claude 会话。",
+    "grey_legend": "按键显示为黑白时，表示未检测到任何 Claude Code 会话。一旦检测到会话，按键会自动恢复彩色。",
+    "hook_checking": "检查中…",
+    "hook_enabled_one": "Claude 追踪：已启用（{n} 个配置）",
+    "hook_enabled_many": "Claude 追踪：已启用（{n} 个配置）",
+    "hook_none": "Claude 追踪：未找到 Claude Code 安装（缺少 ~/.claude）",
+    "hook_missing_one": "Claude 追踪：{n} 个配置未设置",
+    "hook_missing_many": "Claude 追踪：{n} 个配置未设置",
+    "pet_dir_label": "监视的项目目录（可选）",
+    "pet_dir_placeholder": "留空 = 所有 claude 会话",
+    "pet_dir_help": "留空则显示所有 Claude Code 会话的合并状态。填写项目路径则只监视该会话。按下即可跳转到需要你的会话。",
+    "terminal_label": "终端",
+    "terminal_help": "全局选择——所有 Claude Deck 按键都会使用。",
+    "terminal_help_cycle": "全局选择——所有 Claude Deck 按键都会使用（会话显示、跳转、回答）。",
+    "cycle_label": "切换对象",
+    "cycle_windows": "窗口（cmd+`）",
+    "cycle_tabs": "标签页（cmd+shift+]）"
+  }
 }

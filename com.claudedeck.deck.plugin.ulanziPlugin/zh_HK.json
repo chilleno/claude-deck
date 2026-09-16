@@ -4,15 +4,15 @@
   "Actions": [
     {
       "Name": "Claude 寵物",
-      "Tooltip": "Claude Code 即時狀態:編碼、提問或閒置。撳下跳去需要你嘅工作階段。"
+      "Tooltip": "Claude Code 即時狀態:編碼、提問或閒置。撳下跳去需要你嘅工作階段。 圖示變灰 = 未偵測到 Claude Code 工作階段。"
     },
     {
       "Name": "下一個選項",
-      "Tooltip": "循環顯示 Claude 提出嘅選項(喺大按鍵顯示)。"
+      "Tooltip": "循環顯示 Claude 提出嘅選項(喺大按鍵顯示)。 圖示變灰 = 未偵測到 Claude Code 工作階段。"
     },
     {
       "Name": "確認選項",
-      "Tooltip": "用大按鍵上而家顯示嘅選項回覆 Claude。"
+      "Tooltip": "用大按鍵上而家顯示嘅選項回覆 Claude。 圖示變灰 = 未偵測到 Claude Code 工作階段。"
     },
     {
       "Name": "大屏幕設定",
@@ -20,11 +20,11 @@
     },
     {
       "Name": "切換工作階段",
-      "Tooltip": "切換大屏顯示嘅 Claude 工作階段（單向循環）。"
+      "Tooltip": "切換大屏顯示嘅 Claude 工作階段（單向循環）。 圖示變灰 = 未偵測到 Claude Code 工作階段。"
     },
     {
       "Name": "Claude 壓縮",
-      "Tooltip": "壓縮最上層 Claude 會話的上下文。按一次確認（眼睛），再按一次執行 /compact。"
+      "Tooltip": "壓縮最上層 Claude 會話的上下文。按一次確認（眼睛），再按一次執行 /compact。 圖示變灰 = 未偵測到 Claude Code 工作階段。"
     },
     {
       "Name": "工作階段屏幕",
@@ -32,8 +32,30 @@
     },
     {
       "Name": "Claude 清空",
-      "Tooltip": "清空最上層 Claude 工作階段嘅對話記錄。按一次確認（眼睛），再按一次執行 /clear。"
+      "Tooltip": "清空最上層 Claude 工作階段嘅對話記錄。按一次確認（眼睛），再按一次執行 /clear。 圖示變灰 = 未偵測到 Claude Code 工作階段。"
     }
   ],
-  "Localization": {}
+  "Localization": {
+    "bigscreen_title": "大屏幕上嘅 Claude 狀態",
+    "bigscreen_help": "撳呢個鍵可以喺 Claude 狀態同內置小工具之間切換大屏幕顯示。Ulanzi Studio 會自動重啟以套用（約 15 秒），亦會自動儲存頁面備份。如果編輯頁面後 Studio 移除咗大屏幕顯示，按鍵會顯示載入動畫——重啟 Studio 即可重新套用。",
+    "tracking_title": "Claude Code 追蹤",
+    "tracking_button": "啟用 Claude 追蹤",
+    "tracking_help": "喺 Claude Code 設定（~/.claude*/settings.json，會儲存備份）加入 hook，令按鍵可以讀取工作階段狀態。之後請重啟執行中嘅 claude 工作階段。",
+    "grey_legend": "按鍵變成黑白，即係未偵測到任何 Claude Code 工作階段。一偵測到工作階段就會自動回復彩色。",
+    "hook_checking": "檢查中…",
+    "hook_enabled_one": "Claude 追蹤：已啟用（{n} 個設定檔）",
+    "hook_enabled_many": "Claude 追蹤：已啟用（{n} 個設定檔）",
+    "hook_none": "Claude 追蹤：搵唔到 Claude Code 安裝（缺少 ~/.claude）",
+    "hook_missing_one": "Claude 追蹤：{n} 個設定檔未設定",
+    "hook_missing_many": "Claude 追蹤：{n} 個設定檔未設定",
+    "pet_dir_label": "監察嘅專案資料夾（選填）",
+    "pet_dir_placeholder": "留空 = 所有 claude 工作階段",
+    "pet_dir_help": "留空就顯示所有 Claude Code 工作階段嘅合併狀態。填咗路徑就只監察嗰一個。撳下就可以跳去需要你嘅工作階段。",
+    "terminal_label": "終端機",
+    "terminal_help": "全域選擇——所有 Claude Deck 按鍵都會用。",
+    "terminal_help_cycle": "全域選擇——所有 Claude Deck 按鍵都會用（工作階段顯示、跳轉、回答）。",
+    "cycle_label": "切換對象",
+    "cycle_windows": "視窗（cmd+`）",
+    "cycle_tabs": "分頁（cmd+shift+]）"
+  }
 }

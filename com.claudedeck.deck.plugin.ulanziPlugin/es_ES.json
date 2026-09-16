@@ -4,15 +4,15 @@
   "Actions": [
     {
       "Name": "Mascota Claude",
-      "Tooltip": "Estado en vivo de Claude Code: programando, preguntando o inactivo. Pulsa para ir a la sesión que te necesita."
+      "Tooltip": "Estado en vivo de Claude Code: programando, preguntando o inactivo. Pulsa para ir a la sesión que te necesita. Icono gris = ninguna sesión de Claude Code detectada."
     },
     {
       "Name": "Siguiente Opción",
-      "Tooltip": "Recorre las opciones que Claude está preguntando (se muestran en la tecla grande)."
+      "Tooltip": "Recorre las opciones que Claude está preguntando (se muestran en la tecla grande). Icono gris = ninguna sesión de Claude Code detectada."
     },
     {
       "Name": "Confirmar Opción",
-      "Tooltip": "Responde a Claude con la opción mostrada en la tecla grande."
+      "Tooltip": "Responde a Claude con la opción mostrada en la tecla grande. Icono gris = ninguna sesión de Claude Code detectada."
     },
     {
       "Name": "Configurar Pantalla",
@@ -20,11 +20,11 @@
     },
     {
       "Name": "Cambiar Sesión",
-      "Tooltip": "Cambia qué sesión de Claude muestra la pantalla grande (en un sentido, vuelve al inicio)."
+      "Tooltip": "Cambia qué sesión de Claude muestra la pantalla grande (en un sentido, vuelve al inicio). Icono gris = ninguna sesión de Claude Code detectada."
     },
     {
       "Name": "Claude Compact",
-      "Tooltip": "Compacta el contexto de la sesión Claude principal. Pulsa una vez para confirmar (ojos) y de nuevo para ejecutar /compact."
+      "Tooltip": "Compacta el contexto de la sesión Claude principal. Pulsa una vez para confirmar (ojos) y de nuevo para ejecutar /compact. Icono gris = ninguna sesión de Claude Code detectada."
     },
     {
       "Name": "Pantalla de Sesión",
@@ -32,8 +32,30 @@
     },
     {
       "Name": "Claude Clear",
-      "Tooltip": "Borra el historial de conversación de la sesión Claude principal. Pulsa una vez para confirmar (ojos) y de nuevo para ejecutar /clear."
+      "Tooltip": "Borra el historial de conversación de la sesión Claude principal. Pulsa una vez para confirmar (ojos) y de nuevo para ejecutar /clear. Icono gris = ninguna sesión de Claude Code detectada."
     }
   ],
-  "Localization": {}
+  "Localization": {
+    "bigscreen_title": "Estado de Claude en la pantalla grande",
+    "bigscreen_help": "Pulsa esta tecla para alternar la pantalla grande entre el estado de Claude y el widget integrado. Ulanzi Studio se reinicia solo para aplicarlo (~15 s). Se guarda una copia de seguridad de la página automáticamente. Si Studio quita la pantalla grande al editar la página, la tecla muestra la animación de carga: reinicia Studio para volver a aplicarlo.",
+    "tracking_title": "Seguimiento de Claude Code",
+    "tracking_button": "Activar seguimiento de Claude",
+    "tracking_help": "Añade los hooks a tu configuración de Claude Code (~/.claude*/settings.json, con copia de seguridad) para que el deck pueda ver el estado de las sesiones. Reinicia después las sesiones de claude abiertas.",
+    "grey_legend": "Las teclas en blanco y negro indican que no hay ninguna sesión de Claude Code detectada. Vuelven a color en cuanto se detecta una sesión.",
+    "hook_checking": "Comprobando…",
+    "hook_enabled_one": "Seguimiento de Claude: activado ({n} perfil)",
+    "hook_enabled_many": "Seguimiento de Claude: activado ({n} perfiles)",
+    "hook_none": "Seguimiento de Claude: no se encontró ninguna instalación de Claude Code (falta ~/.claude)",
+    "hook_missing_one": "Seguimiento de Claude: {n} perfil sin configurar",
+    "hook_missing_many": "Seguimiento de Claude: {n} perfiles sin configurar",
+    "pet_dir_label": "Carpeta del proyecto a vigilar (opcional)",
+    "pet_dir_placeholder": "vacío = todas las sesiones de claude",
+    "pet_dir_help": "Déjalo vacío para ver el estado combinado de todas las sesiones de Claude Code. Indica una ruta para vigilar solo esa. Pulsar = ir a la sesión que te necesita.",
+    "terminal_label": "Terminal",
+    "terminal_help": "Elección global: la usan todas las teclas de Claude Deck.",
+    "terminal_help_cycle": "Elección global: la usan todas las teclas de Claude Deck (pantalla de sesión, salto y respuestas).",
+    "cycle_label": "Alternar entre",
+    "cycle_windows": "Ventanas (cmd+`)",
+    "cycle_tabs": "Pestañas (cmd+shift+])"
+  }
 }

@@ -4,15 +4,15 @@
   "Actions": [
     {
       "Name": "Claude 펫",
-      "Tooltip": "Claude Code 실시간 상태: 코딩, 질문, 대기. 누르면 해당 세션으로 이동."
+      "Tooltip": "Claude Code 실시간 상태: 코딩, 질문, 대기. 누르면 해당 세션으로 이동. 회색 아이콘 = 감지된 Claude Code 세션 없음."
     },
     {
       "Name": "다음 옵션",
-      "Tooltip": "Claude가 묻는 옵션을 순환 (큰 키에 표시)."
+      "Tooltip": "Claude가 묻는 옵션을 순환 (큰 키에 표시). 회색 아이콘 = 감지된 Claude Code 세션 없음."
     },
     {
       "Name": "옵션 확인",
-      "Tooltip": "큰 키에 표시된 옵션으로 Claude에 답변."
+      "Tooltip": "큰 키에 표시된 옵션으로 Claude에 답변. 회색 아이콘 = 감지된 Claude Code 세션 없음."
     },
     {
       "Name": "화면 설정",
@@ -20,11 +20,11 @@
     },
     {
       "Name": "세션 전환",
-      "Tooltip": "큰 화면에 표시할 Claude 세션을 전환합니다(한 방향, 끝나면 처음으로)."
+      "Tooltip": "큰 화면에 표시할 Claude 세션을 전환합니다(한 방향, 끝나면 처음으로). 회색 아이콘 = 감지된 Claude Code 세션 없음."
     },
     {
       "Name": "Claude 컴팩트",
-      "Tooltip": "최상위 Claude 세션의 컨텍스트를 압축합니다. 한 번 누르면 확인(눈), 다시 누르면 /compact 실행."
+      "Tooltip": "최상위 Claude 세션의 컨텍스트를 압축합니다. 한 번 누르면 확인(눈), 다시 누르면 /compact 실행. 회색 아이콘 = 감지된 Claude Code 세션 없음."
     },
     {
       "Name": "세션 화면",
@@ -32,8 +32,30 @@
     },
     {
       "Name": "Claude 클리어",
-      "Tooltip": "최상위 Claude 세션의 대화 기록을 지웁니다. 한 번 누르면 확인(눈), 다시 누르면 /clear 실행."
+      "Tooltip": "최상위 Claude 세션의 대화 기록을 지웁니다. 한 번 누르면 확인(눈), 다시 누르면 /clear 실행. 회색 아이콘 = 감지된 Claude Code 세션 없음."
     }
   ],
-  "Localization": {}
+  "Localization": {
+    "bigscreen_title": "큰 화면의 Claude 상태",
+    "bigscreen_help": "이 키를 누르면 큰 화면이 Claude 상태와 기본 위젯 사이에서 전환됩니다. 적용을 위해 Ulanzi Studio가 자동으로 재시작합니다(약 15초). 페이지 백업은 자동으로 저장됩니다. 페이지를 편집한 뒤 Studio가 큰 화면 표시를 지우면 키에 로딩 애니메이션이 나타납니다. Studio를 재시작하면 다시 적용됩니다.",
+    "tracking_title": "Claude Code 추적",
+    "tracking_button": "Claude 추적 활성화",
+    "tracking_help": "Claude Code 설정(~/.claude*/settings.json, 백업 저장)에 훅을 추가해 덱이 세션 상태를 볼 수 있게 합니다. 이후 실행 중인 claude 세션을 다시 시작하세요.",
+    "grey_legend": "키가 흑백으로 표시되면 감지된 Claude Code 세션이 없다는 뜻입니다. 세션이 감지되면 다시 컬러로 돌아옵니다.",
+    "hook_checking": "확인 중…",
+    "hook_enabled_one": "Claude 추적: 활성화됨(프로필 {n}개)",
+    "hook_enabled_many": "Claude 추적: 활성화됨(프로필 {n}개)",
+    "hook_none": "Claude 추적: Claude Code 설치를 찾을 수 없습니다(~/.claude 없음)",
+    "hook_missing_one": "Claude 추적: 프로필 {n}개 미설정",
+    "hook_missing_many": "Claude 추적: 프로필 {n}개 미설정",
+    "pet_dir_label": "감시할 프로젝트 폴더(선택)",
+    "pet_dir_placeholder": "비워두면 = 모든 claude 세션",
+    "pet_dir_help": "비워두면 모든 Claude Code 세션의 상태를 함께 표시합니다. 경로를 입력하면 해당 세션만 감시합니다. 누르면 필요한 세션으로 이동합니다.",
+    "terminal_label": "터미널",
+    "terminal_help": "전역 설정 — 모든 Claude Deck 키에 적용됩니다.",
+    "terminal_help_cycle": "전역 설정 — 모든 Claude Deck 키에 적용됩니다(세션 화면, 이동, 답변).",
+    "cycle_label": "전환 대상",
+    "cycle_windows": "창 (cmd+`)",
+    "cycle_tabs": "탭 (cmd+shift+])"
+  }
 }

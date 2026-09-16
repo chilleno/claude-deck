@@ -4,15 +4,15 @@
   "Actions": [
     {
       "Name": "Claude Pet",
-      "Tooltip": "Live-Status von Claude Code: codiert, fragt oder wartet. Drücken springt zur Session, die dich braucht."
+      "Tooltip": "Live-Status von Claude Code: codiert, fragt oder wartet. Drücken springt zur Session, die dich braucht. Graues Symbol = keine Claude-Code-Sitzung erkannt."
     },
     {
       "Name": "Nächste Option",
-      "Tooltip": "Durch die Optionen blättern, die Claude anbietet (auf der großen Taste angezeigt)."
+      "Tooltip": "Durch die Optionen blättern, die Claude anbietet (auf der großen Taste angezeigt). Graues Symbol = keine Claude-Code-Sitzung erkannt."
     },
     {
       "Name": "Option bestätigen",
-      "Tooltip": "Claude mit der angezeigten Option antworten."
+      "Tooltip": "Claude mit der angezeigten Option antworten. Graues Symbol = keine Claude-Code-Sitzung erkannt."
     },
     {
       "Name": "Display einrichten",
@@ -20,11 +20,11 @@
     },
     {
       "Name": "Sitzung wechseln",
-      "Tooltip": "Wechselt, welche Claude-Sitzung der große Bildschirm zeigt (eine Richtung, beginnt von vorn)."
+      "Tooltip": "Wechselt, welche Claude-Sitzung der große Bildschirm zeigt (eine Richtung, beginnt von vorn). Graues Symbol = keine Claude-Code-Sitzung erkannt."
     },
     {
       "Name": "Claude Compact",
-      "Tooltip": "Komprimiert den Kontext der obersten Claude-Session. Einmal drücken zum Bestätigen (Augen), erneut drücken für /compact."
+      "Tooltip": "Komprimiert den Kontext der obersten Claude-Session. Einmal drücken zum Bestätigen (Augen), erneut drücken für /compact. Graues Symbol = keine Claude-Code-Sitzung erkannt."
     },
     {
       "Name": "Session-Display",
@@ -32,8 +32,30 @@
     },
     {
       "Name": "Claude Clear",
-      "Tooltip": "Löscht den Gesprächsverlauf der obersten Claude-Session. Einmal drücken zum Bestätigen (Augen), erneut drücken für /clear."
+      "Tooltip": "Löscht den Gesprächsverlauf der obersten Claude-Session. Einmal drücken zum Bestätigen (Augen), erneut drücken für /clear. Graues Symbol = keine Claude-Code-Sitzung erkannt."
     }
   ],
-  "Localization": {}
+  "Localization": {
+    "bigscreen_title": "Claude-Status auf dem großen Display",
+    "bigscreen_help": "Diese Taste schaltet das große Display zwischen Claude-Status und dem eingebauten Widget um. Ulanzi Studio startet zum Übernehmen selbst neu (~15 s). Eine Sicherung der Seite wird automatisch angelegt. Entfernt Studio die Anzeige nach dem Bearbeiten der Seite, zeigt die Taste die Ladeanimation — Studio neu starten, um sie erneut anzuwenden.",
+    "tracking_title": "Claude-Code-Tracking",
+    "tracking_button": "Claude-Tracking aktivieren",
+    "tracking_help": "Trägt die Hooks in deine Claude-Code-Einstellungen ein (~/.claude*/settings.json, Sicherung wird angelegt), damit das Deck den Sitzungsstatus sieht. Laufende claude-Sitzungen danach neu starten.",
+    "grey_legend": "Schwarz-weiße Tasten bedeuten, dass keine Claude-Code-Sitzung erkannt wird. Sobald eine Sitzung erkannt wird, sind sie wieder farbig.",
+    "hook_checking": "Prüfe…",
+    "hook_enabled_one": "Claude-Tracking: aktiv ({n} Profil)",
+    "hook_enabled_many": "Claude-Tracking: aktiv ({n} Profile)",
+    "hook_none": "Claude-Tracking: keine Claude-Code-Installation gefunden (~/.claude fehlt)",
+    "hook_missing_one": "Claude-Tracking: {n} Profil nicht eingerichtet",
+    "hook_missing_many": "Claude-Tracking: {n} Profile nicht eingerichtet",
+    "pet_dir_label": "Projektordner überwachen (optional)",
+    "pet_dir_placeholder": "leer = alle claude-Sitzungen",
+    "pet_dir_help": "Leer lassen für den Gesamtstatus aller Claude-Code-Sitzungen. Einen Projektpfad eintragen, um nur diese eine zu beobachten. Drücken = zur Sitzung springen, die dich braucht.",
+    "terminal_label": "Terminal",
+    "terminal_help": "Globale Auswahl — gilt für alle Claude-Deck-Tasten.",
+    "terminal_help_cycle": "Globale Auswahl — gilt für alle Claude-Deck-Tasten (Sitzungsanzeige, Sprung, Antworten).",
+    "cycle_label": "Wechseln zwischen",
+    "cycle_windows": "Fenster (cmd+`)",
+    "cycle_tabs": "Tabs (cmd+shift+])"
+  }
 }

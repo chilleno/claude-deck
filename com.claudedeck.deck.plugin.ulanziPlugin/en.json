@@ -4,15 +4,15 @@
   "Actions": [
     {
       "Name": "Claude Pet",
-      "Tooltip": "Live Claude Code status: coding, asking, or idle. Press to jump to the session needing you."
+      "Tooltip": "Live Claude Code status: coding, asking, or idle. Press to jump to the session needing you. Grey icon = no Claude Code session detected."
     },
     {
       "Name": "Claude Option Next",
-      "Tooltip": "Cycle through the options Claude is asking about (shown on the big key)."
+      "Tooltip": "Cycle through the options Claude is asking about (shown on the big key). Grey icon = no Claude Code session detected."
     },
     {
       "Name": "Claude Option OK",
-      "Tooltip": "Answer Claude with the option currently shown on the big key."
+      "Tooltip": "Answer Claude with the option currently shown on the big key. Grey icon = no Claude Code session detected."
     },
     {
       "Name": "Claude Screen Setup",
@@ -20,11 +20,11 @@
     },
     {
       "Name": "Claude Session Switch",
-      "Tooltip": "Cycle which Claude session the big screen shows (one way, wraps around)."
+      "Tooltip": "Cycle which Claude session the big screen shows (one way, wraps around). Grey icon = no Claude Code session detected."
     },
     {
       "Name": "Claude Compact",
-      "Tooltip": "Compact the top Claude session's context. Press once to confirm (eyes), press again to run /compact."
+      "Tooltip": "Compact the top Claude session's context. Press once to confirm (eyes), press again to run /compact. Grey icon = no Claude Code session detected."
     },
     {
       "Name": "Claude Session Screen",
@@ -32,8 +32,30 @@
     },
     {
       "Name": "Claude Clear",
-      "Tooltip": "Wipe the top Claude session's conversation history. Press once to confirm (eyes), press again to run /clear."
+      "Tooltip": "Wipe the top Claude session's conversation history. Press once to confirm (eyes), press again to run /clear. Grey icon = no Claude Code session detected."
     }
   ],
-  "Localization": {}
+  "Localization": {
+    "bigscreen_title": "Claude status on the big screen",
+    "bigscreen_help": "Press this key to toggle the big screen between Claude status and the built-in widget. Ulanzi Studio restarts itself to apply (~15 s). A backup of the page is saved automatically. If Studio removes the big-screen display after you edit the page, the key shows the loading animation — restart Studio to reapply.",
+    "tracking_title": "Claude Code tracking",
+    "tracking_button": "Enable Claude tracking",
+    "tracking_help": "Adds hook entries to your Claude Code settings (~/.claude*/settings.json, backup saved) so the deck can see session status. Restart running claude sessions afterwards.",
+    "grey_legend": "Black-and-white keys mean no Claude Code session is being tracked. The keys return to colour as soon as a session is detected.",
+    "hook_checking": "Checking…",
+    "hook_enabled_one": "Claude tracking: enabled ({n} profile)",
+    "hook_enabled_many": "Claude tracking: enabled ({n} profiles)",
+    "hook_none": "Claude tracking: no Claude Code installation found (~/.claude missing)",
+    "hook_missing_one": "Claude tracking: {n} profile not set up",
+    "hook_missing_many": "Claude tracking: {n} profiles not set up",
+    "pet_dir_label": "Watch project dir (optional)",
+    "pet_dir_placeholder": "empty = all claude sessions",
+    "pet_dir_help": "Leave empty to show combined status of every Claude Code session. Set a project path to watch only that one. Press = jump to the session needing you.",
+    "terminal_label": "Terminal",
+    "terminal_help": "Global choice — used by all Claude Deck keys.",
+    "terminal_help_cycle": "Global choice — used by all Claude Deck keys (session display, jump, answering).",
+    "cycle_label": "Cycle between",
+    "cycle_windows": "Windows (cmd+`)",
+    "cycle_tabs": "Tabs (cmd+shift+])"
+  }
 }
