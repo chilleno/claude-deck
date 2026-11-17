@@ -67,6 +67,9 @@ for (const [key, file] of Object.entries({
   sessionswitch: 'action-sessionswitch.png',
   compact: 'action-compact.png',
   clear: 'action-clear.png',
+  modelsonnet: 'action-modelsonnet.png',
+  modelopus: 'action-modelopus.png',
+  modelfable: 'action-modelfable.png',
 })) {
   try {
     OFFLINE_PNG[key] = 'data:image/png;base64,' + readFileSync(join(__dirname, '../resources/offline', file)).toString('base64');
@@ -81,6 +84,9 @@ for (const [key, file] of Object.entries({
   sessionswitch: 'action-sessionswitch.png',
   compact: 'action-compact.png',
   clear: 'action-clear.png',
+  modelsonnet: 'action-modelsonnet.png',
+  modelopus: 'action-modelopus.png',
+  modelfable: 'action-modelfable.png',
 })) {
   try {
     SETUP_PNG[key] = 'data:image/png;base64,' + readFileSync(join(__dirname, '../resources/setup', file)).toString('base64');
@@ -156,6 +162,9 @@ const HANDLERS = {
   [`${PLUGIN_UUID}.screensetup`]: setupPress,
   [`${PLUGIN_UUID}.compact`]: compactPress,
   [`${PLUGIN_UUID}.clear`]: clearPress,
+  [`${PLUGIN_UUID}.modelsonnet`]: () => modelPress('sonnet'),
+  [`${PLUGIN_UUID}.modelopus`]: () => modelPress('opus'),
+  [`${PLUGIN_UUID}.modelfable`]: () => modelPress('fable'),
   [`${PLUGIN_UUID}.sessionswitch`]: switchPress,
 };
 
@@ -827,6 +836,76 @@ async function clearPress() {
   refreshClearKeys();
 }
 
+// ---- Claude Model keys (Sonnet / Opus / Fable) ---------------------------
+// One key per model. A press types `/model <alias>` into the session shown on
+// the big key. No confirm step: switching the model is cheap and reversible,
+// unlike /clear. Refused (with a toast, never silently) while a prompt is up
+// or the target is compacting — same guards as Compact / Clear.
+// `arg` is what follows /model; aliases track the latest release of each
+// family, so change it to a full model ID here to pin a specific version.
+const MODEL_KEYS = {
+  sonnet: { arg: 'sonnet', label: 'Sonnet' },
+  opus: { arg: 'opus', label: 'Opus' },
+  fable: { arg: 'fable', label: 'Fable' },
+};
+const MODEL_PNG = {};
+for (const k of Object.keys(MODEL_KEYS)) {
+  try {
+    MODEL_PNG[k] = 'data:image/png;base64,' + readFileSync(join(__dirname, '../resources', `action-model${k}.png`)).toString('base64');
+  } catch { /* png missing — the key keeps the manifest icon */ }
+}
+
+function modelKeyOf(context) {
+  const uuid = ($UD.decodeContext(context) || {}).uuid || '';
+  const m = uuid.startsWith(`${PLUGIN_UUID}.model`) ? uuid.slice(`${PLUGIN_UUID}.model`.length) : '';
+  return MODEL_KEYS[m] ? m : null;
+}
+
+function refreshModelIcon(inst) {
+  try {
+    const model = modelKeyOf(inst.context);
+    if (!model) return;
+    const states = readStates();
+    let wanted;
+    if (!states.length) wanted = offlineKey();
+    else if (displayedSession(states).state === 'compacting') wanted = 'gif:bonk';
+    else wanted = 'png:model';
+    if (wanted === inst.lastIcon) return;
+    const [kind, name] = wanted.split(':');
+    const PNGS = { offline: offlineIcon(`model${model}`), setup: offlineIcon(`model${model}`), model: MODEL_PNG[model] };
+    if (kind === 'gif' && PET_GIFS[name]) {
+      inst.lastIcon = wanted;
+      $UD.setGifDataIcon(inst.context, PET_GIFS[name]);
+    } else if (kind === 'png' && PNGS[name]) {
+      inst.lastIcon = wanted;
+      $UD.setBaseDataIcon(inst.context, PNGS[name]);
+    }
+  } catch (e) {
+    log('model icon refresh failed', e?.message);
+  }
+}
+
+function startModelPolling(inst) {
+  stopCyclePolling(inst);
+  refreshModelIcon(inst);
+  inst.timer = setInterval(() => refreshModelIcon(inst), PET_POLL_MS);
+}
+
+async function modelPress(model) {
+  const cfg = MODEL_KEYS[model];
+  const states = readStates();
+  if (!states.length) { $UD.toast(noSessionToast()); return; }
+  const best = displayedSession(states);
+  if (promptPending(states, best)) { $UD.toast('Answer the prompt first'); return; }
+  if (best.state === 'compacting') { $UD.toast('Session is compacting — try again'); return; }
+  const tty = await claudeTtyForSession(best);
+  if (!tty) { $UD.toast('Session terminal not found'); return; }
+  const out = await sendTextToTty(tty, `/model ${cfg.arg}`, true);
+  if (out.trim() !== 'ok') { $UD.toast('Terminal session not found'); return; }
+  log('sent /model', cfg.arg, 'to', tty);
+  $UD.toast(`Model → ${cfg.label} (${basename(best.cwd || '') || 'session'})`);
+}
+
 const SWITCH_ACTION = `${PLUGIN_UUID}.sessionswitch`;
 
 function isSwitch(context) {
@@ -868,6 +947,7 @@ function ensureInstance(context, settings) {
     if (isCompact(context)) startCompactPolling(inst);
     if (isClear(context)) startClearPolling(inst);
     if (isSwitch(context)) startSwitchPolling(inst);
+    if (modelKeyOf(context)) startModelPolling(inst);
   } else if (settings && Object.keys(settings).length) {
     inst.settings = { ...settings };
   }

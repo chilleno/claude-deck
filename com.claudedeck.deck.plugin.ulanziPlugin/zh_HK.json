@@ -33,6 +33,18 @@
     {
       "Name": "Claude 清空",
       "Tooltip": "清空最上層 Claude 工作階段嘅對話記錄。按一次確認（眼睛），再按一次執行 /clear。 圖示變灰 = 未偵測到 Claude Code 工作階段。"
+    },
+    {
+      "Name": "Claude Model Sonnet",
+      "Tooltip": "Switch the top Claude session to Sonnet (types /model sonnet). Grey icon = no Claude Code session detected."
+    },
+    {
+      "Name": "Claude Model Opus",
+      "Tooltip": "Switch the top Claude session to Opus (types /model opus). Grey icon = no Claude Code session detected."
+    },
+    {
+      "Name": "Claude Model Fable",
+      "Tooltip": "Switch the top Claude session to Fable (types /model fable). Grey icon = no Claude Code session detected."
     }
   ],
   "Localization": {

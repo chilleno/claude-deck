@@ -4,7 +4,7 @@
   "Description": "Claude Code on the Ulanzi Deck: live status pet, answer questions from the deck, and a big-screen session display.",
   "Overview": "See and control every Claude Code session from your Ulanzi Deck.",
   "Author": "Antonio González",
-  "Version": "2.4.0",
+  "Version": "2.5.0",
   "Icon": "resources/icon.png",
   "Banner": [
     "resources/banners/banner-1.png",
@@ -141,6 +141,54 @@
         {
           "Name": "Claude Clear",
           "Image": "resources/action-clear.png"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Controllers": [
+        "Keypad"
+      ]
+    },
+    {
+      "Name": "Claude Model Sonnet",
+      "Tooltip": "Switch the top Claude session to Sonnet (types /model sonnet). Grey icon = no Claude Code session detected.",
+      "Icon": "resources/action-modelsonnet.png",
+      "UUID": "com.claudedeck.deck.plugin.modelsonnet",
+      "States": [
+        {
+          "Name": "Claude Model Sonnet",
+          "Image": "resources/action-modelsonnet.png"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Controllers": [
+        "Keypad"
+      ]
+    },
+    {
+      "Name": "Claude Model Opus",
+      "Tooltip": "Switch the top Claude session to Opus (types /model opus). Grey icon = no Claude Code session detected.",
+      "Icon": "resources/action-modelopus.png",
+      "UUID": "com.claudedeck.deck.plugin.modelopus",
+      "States": [
+        {
+          "Name": "Claude Model Opus",
+          "Image": "resources/action-modelopus.png"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Controllers": [
+        "Keypad"
+      ]
+    },
+    {
+      "Name": "Claude Model Fable",
+      "Tooltip": "Switch the top Claude session to Fable (types /model fable). Grey icon = no Claude Code session detected.",
+      "Icon": "resources/action-modelfable.png",
+      "UUID": "com.claudedeck.deck.plugin.modelfable",
+      "States": [
+        {
+          "Name": "Claude Model Fable",
+          "Image": "resources/action-modelfable.png"
         }
       ],
       "SupportedInMultiActions": false,
