@@ -5,6 +5,10 @@ Rule: every user-visible change bumps the version here **and** in the manifest
 (patch = fix/tweak, minor = new action/feature, major = breaking/UUID-level).
 Store zips are built from this version.
 
+## 2.5.0 — 2026-11-17
+
+- **Model keys: Claude Model Sonnet / Opus / Fable** — three new actions, one per model. A press types `/model sonnet|opus|fable` into the session shown on the big key. No confirm step (switching model is cheap and reversible, unlike `/clear`). Refused with a toast while a question / permission prompt is pending or while the target session is compacting (bonk GIF then), same guards as Compact / Clear. Each key has its own coloured icon, plus the greyscale and setup-badge variants (`resources/`, `resources/offline/`, `resources/setup/`). The `/model` argument is an alias that tracks the latest release of each family; pin a full model ID in `MODEL_KEYS` (`plugin/app.js`) if needed
+
 ## 2.4.0 — 2026-09-16
 
 Answers [#4](https://github.com/chilleno/claude-deck/issues/4) (Ulanzi Studio team): lower the barrier to entry.

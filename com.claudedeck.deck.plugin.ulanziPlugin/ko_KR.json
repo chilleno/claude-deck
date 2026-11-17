@@ -33,6 +33,18 @@
     {
       "Name": "Claude 클리어",
       "Tooltip": "최상위 Claude 세션의 대화 기록을 지웁니다. 한 번 누르면 확인(눈), 다시 누르면 /clear 실행. 회색 아이콘 = 감지된 Claude Code 세션 없음."
+    },
+    {
+      "Name": "Claude Model Sonnet",
+      "Tooltip": "Switch the top Claude session to Sonnet (types /model sonnet). Grey icon = no Claude Code session detected."
+    },
+    {
+      "Name": "Claude Model Opus",
+      "Tooltip": "Switch the top Claude session to Opus (types /model opus). Grey icon = no Claude Code session detected."
+    },
+    {
+      "Name": "Claude Model Fable",
+      "Tooltip": "Switch the top Claude session to Fable (types /model fable). Grey icon = no Claude Code session detected."
     }
   ],
   "Localization": {

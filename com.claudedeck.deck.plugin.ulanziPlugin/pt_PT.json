@@ -33,6 +33,18 @@
     {
       "Name": "Claude Clear",
       "Tooltip": "Apaga o histórico de conversa da sessão Claude principal. Prima uma vez para confirmar (olhos) e novamente para executar /clear. Ícone cinzento = nenhuma sessão do Claude Code detetada."
+    },
+    {
+      "Name": "Claude Model Sonnet",
+      "Tooltip": "Switch the top Claude session to Sonnet (types /model sonnet). Grey icon = no Claude Code session detected."
+    },
+    {
+      "Name": "Claude Model Opus",
+      "Tooltip": "Switch the top Claude session to Opus (types /model opus). Grey icon = no Claude Code session detected."
+    },
+    {
+      "Name": "Claude Model Fable",
+      "Tooltip": "Switch the top Claude session to Fable (types /model fable). Grey icon = no Claude Code session detected."
     }
   ],
   "Localization": {
